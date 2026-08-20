@@ -1,4 +1,4 @@
-import { getThemeStyle, type ThemeName } from '../../lib/themes'
+import { getThemeStyle, type ThemeName } from '../../../lib/themes'
 
 export interface TextHoverProps {
   text: string

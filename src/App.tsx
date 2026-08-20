@@ -1,6 +1,6 @@
 import './App.css'
-import { SimpleCard } from './components/ui/SimpleCard'
-import { TextHover } from './components/ui/TextHover'
+import { SimpleCard } from './components/data-display/Card/Card'
+import { TextHover } from './components/effects/TextHover/TextHover'
 import { ThemeScope, useTheme } from './components/ui/ThemeProvider'
 import { themeNames, type ThemeName } from './lib/themes'
 

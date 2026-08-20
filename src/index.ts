@@ -1,6 +1,6 @@
 export { ThemeProvider, ThemeScope, useTheme } from './components/ui/ThemeProvider'
-export { SimpleCard } from './components/ui/SimpleCard'
-export { TextHover } from './components/ui/TextHover'
+export { SimpleCard } from './components/data-display/Card/Card'
+export { TextHover } from './components/effects/TextHover/TextHover'
 export {
   defaultTheme,
   getThemeStyle,
