@@ -1,26 +1,31 @@
-import { getThemeStyle, type ThemeName } from '../../../lib/themes'
+import { forwardRef } from "react";
 
-export interface TextHoverProps {
-  text: string
-  hoverText: string
-  theme?: ThemeName
-  className?: string
-}
+import type { TextHoverProps } from "./TextHover.types";
+import { cn } from "../../../lib/utils";
 
-export function TextHover({ text, hoverText, theme = 'graphite', className }: TextHoverProps) {
-  const repeatedHoverText = Array.from({ length: 4 }, () => hoverText).join(' • ')
-
-  return (
-    <div
-      className={['ui-text-hover', className].filter(Boolean).join(' ')}
-      style={getThemeStyle(theme)}
-      tabIndex={0}
+export const TextHover = forwardRef<HTMLSpanElement, TextHoverProps>(
+  ({ className, hoverText, text, ...props }, ref) => (
+    <span
+      ref={ref}
+      className={cn(
+        "group",
+        "relative",
+        "inline-grid",
+        "cursor-default",
+        "overflow-hidden",
+        "text-(--dil-color-text)",
+        className,
+      )}
+      {...props}
     >
-      <span className="ui-text-hover__base">{text}</span>
-      <span className="ui-text-hover__overlay" aria-hidden="true">
-        <span className="ui-text-hover__track ui-text-hover__track--front">{repeatedHoverText}</span>
-        <span className="ui-text-hover__track ui-text-hover__track--back">{repeatedHoverText}</span>
+      <span className="col-start-1 row-start-1 transition-transform duration-200 group-hover:-translate-y-full">
+        {text}
       </span>
-    </div>
-  )
-}
+      <span className="col-start-1 row-start-1 translate-y-full text-[var(--dil-color-primary)] transition-transform duration-200 group-hover:translate-y-0">
+        {hoverText}
+      </span>
+    </span>
+  ),
+);
+
+TextHover.displayName = "TextHover";

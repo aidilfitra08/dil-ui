@@ -1,7 +1,10 @@
 import { defineConfig } from "vite";
+
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
-import { resolve } from "path";
+import tailwindcss from "@tailwindcss/vite";
+
+import { resolve } from "node:path";
 
 export default defineConfig({
   plugins: [
@@ -10,20 +13,34 @@ export default defineConfig({
       tsconfigPath: "./tsconfig.app.json",
       insertTypesEntry: true,
     }),
+    tailwindcss(),
   ],
+
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "MyUiLibrary",
+      name: "DilUI",
       fileName: "index",
+      cssFileName: "index",
+
       formats: ["es", "umd"],
     },
-    rollupOptions: {
-      external: ["react", "react-dom"],
+
+    rolldownOptions: {
+      external: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "react/compiler-runtime",
+      ],
+
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react/jsx-runtime": "ReactJSXRuntime",
+          "react/jsx-dev-runtime": "ReactJSXRuntime",
         },
       },
     },

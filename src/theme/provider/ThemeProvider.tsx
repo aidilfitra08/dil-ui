@@ -61,6 +61,10 @@ export function ThemeProvider({
     applyThemeTokens(root, tokens);
   }, [tokens]);
 
+  useEffect(() => {
+    setCurrentMode(mode);
+  }, [mode]);
+
   return (
     <ThemeContext.Provider
       value={{
@@ -71,7 +75,9 @@ export function ThemeProvider({
         setMode: setCurrentMode,
       }}
     >
-      <div ref={scopeRef}>{children}</div>
+      <div ref={scopeRef} data-dil-theme>
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 }

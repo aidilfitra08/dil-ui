@@ -47,12 +47,21 @@ export const neoBrutalismTheme: Theme = {
     },
 
     typography: {
-      xs: "12px",
-      sm: "14px",
-      md: "16px",
-      lg: "18px",
-      xl: "20px",
-      "2xl": "24px",
+      fontFamily: "Arial Black, Arial, sans-serif",
+      fontSizes: {
+        xs: "12px",
+        sm: "14px",
+        md: "16px",
+        lg: "18px",
+        xl: "20px",
+        "2xl": "24px",
+      },
+      fontWeights: {
+        regular: "400",
+        medium: "500",
+        semibold: "700",
+        bold: "900",
+      },
     },
   },
 
@@ -100,12 +109,21 @@ export const neoBrutalismTheme: Theme = {
     },
 
     typography: {
-      xs: "12px",
-      sm: "14px",
-      md: "16px",
-      lg: "18px",
-      xl: "20px",
-      "2xl": "24px",
+      fontFamily: "Arial Black, Arial, sans-serif",
+      fontSizes: {
+        xs: "12px",
+        sm: "14px",
+        md: "16px",
+        lg: "18px",
+        xl: "20px",
+        "2xl": "24px",
+      },
+      fontWeights: {
+        regular: "400",
+        medium: "500",
+        semibold: "700",
+        bold: "900",
+      },
     },
   },
 };

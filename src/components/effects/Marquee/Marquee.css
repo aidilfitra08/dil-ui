@@ -1,0 +1,31 @@
+@keyframes dil-marquee-scroll {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+.dil-marquee {
+	overflow: hidden;
+	width: 100%;
+}
+
+.dil-marquee__track {
+	animation: dil-marquee-scroll var(--dil-marquee-duration) linear infinite;
+	display: flex;
+	width: max-content;
+}
+
+.dil-marquee__content {
+	flex: none;
+	padding-right: var(--dil-spacing-lg, 24px);
+}
+
+.dil-marquee--pause-on-hover:hover .dil-marquee__track {
+	animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dil-marquee__track {
+		animation: none;
+	}
+}

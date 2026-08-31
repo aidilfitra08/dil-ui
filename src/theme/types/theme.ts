@@ -24,7 +24,16 @@ export interface ThemeTokens {
 
   shadows: Record<SizeScale, string>;
 
-  typography: Record<SizeScale, string>;
+  typography: {
+    fontFamily: string;
+    fontSizes: Record<SizeScale, string>;
+    fontWeights: {
+      regular: string;
+      medium: string;
+      semibold: string;
+      bold: string;
+    };
+  };
 }
 
 export interface Theme {
