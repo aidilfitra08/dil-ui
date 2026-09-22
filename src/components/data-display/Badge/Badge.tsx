@@ -7,17 +7,14 @@ const variantClasses: Record<BadgeVariant, string> = {
   primary: `
     bg-[var(--dil-color-primary)]
     text-[var(--dil-color-text)]
-    border-[var(--dil-color-border)]
   `,
   secondary: `
     bg-[var(--dil-color-secondary)]
     text-[var(--dil-color-text)]
-    border-[var(--dil-color-border)]
   `,
   outline: `
-    bg-transparent
+    bg-[var(--dil-color-surface)]
     text-[var(--dil-color-text)]
-    border-[var(--dil-color-border)]
   `,
 };
 
@@ -27,11 +24,15 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       "inline-flex",
       "items-center",
       "rounded-[var(--dil-radius-sm)]",
-      "border",
-      "px-2",
-      "py-0.5",
-      "text-[var(--dil-font-xs)]",
-      "font-medium",
+      "border-2",
+      "border-(--dil-color-border)",
+      "px-2.5",
+      "py-1",
+      "text-(length:--dil-font-xs)",
+      "font-(--dil-font-weight-bold)",
+      "uppercase",
+      "tracking-[0.08em]",
+      "shadow-(--dil-shadow-sm)",
       variantClasses[variant],
       className,
     );

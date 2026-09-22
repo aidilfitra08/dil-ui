@@ -17,6 +17,10 @@ export function applyThemeTokens(element: HTMLElement, tokens: ThemeTokens) {
     element.style.setProperty(`--dil-shadow-${key}`, value);
   });
 
+  Object.entries(tokens.effects).forEach(([key, value]) => {
+    element.style.setProperty(`--dil-effect-${key}`, value);
+  });
+
   Object.entries(tokens.typography.fontSizes).forEach(([key, value]) => {
     element.style.setProperty(`--dil-font-${key}`, value);
   });

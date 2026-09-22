@@ -12,6 +12,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
         "items-center",
         "gap-2",
         "text-(length:--dil-font-sm)",
+        "font-(--dil-font-weight-semibold)",
         "text-(--dil-color-text)",
         className,
       )}

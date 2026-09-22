@@ -13,6 +13,12 @@ export const glassmorphismTheme: Theme = {
       success: "#15803D",
       warning: "#B45309",
       danger: "#B91C1C",
+      muted: "#5B7284",
+      info: "#0369A1",
+      paper: "rgba(255, 255, 255, 0.82)",
+      ink: "#123047",
+      terminal: "#0F766E",
+      overlay: "rgba(221, 235, 250, 0.72)",
     },
     spacing: {
       xs: "4px",
@@ -55,6 +61,12 @@ export const glassmorphismTheme: Theme = {
         bold: "700",
       },
     },
+    effects: {
+      scanline: "rgba(255, 255, 255, 0.16)",
+      grid: "rgba(15, 118, 110, 0.1)",
+      glow: "rgba(15, 118, 110, 0.24)",
+      paperTexture: "none",
+    },
   },
   dark: {
     colors: {
@@ -67,6 +79,12 @@ export const glassmorphismTheme: Theme = {
       success: "#4ADE80",
       warning: "#FCD34D",
       danger: "#FCA5A5",
+      muted: "#A7BACB",
+      info: "#7DD3FC",
+      paper: "rgba(20, 42, 62, 0.84)",
+      ink: "#08131F",
+      terminal: "#5EEAD4",
+      overlay: "rgba(16, 34, 53, 0.76)",
     },
     spacing: {
       xs: "4px",
@@ -108,6 +126,12 @@ export const glassmorphismTheme: Theme = {
         semibold: "600",
         bold: "700",
       },
+    },
+    effects: {
+      scanline: "rgba(255, 255, 255, 0.08)",
+      grid: "rgba(94, 234, 212, 0.14)",
+      glow: "rgba(94, 234, 212, 0.28)",
+      paperTexture: "none",
     },
   },
 };

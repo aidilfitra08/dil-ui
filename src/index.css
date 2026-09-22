@@ -1,4 +1,17 @@
 @import "tailwindcss/theme";
+
 @import "tailwindcss/utilities";
 
+@import "tailwindcss/preflight";
+
 @source "./";
+
+@keyframes loading-bar {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(200%);
+	}
+}

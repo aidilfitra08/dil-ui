@@ -2,21 +2,33 @@ export type ThemeMode = "light" | "dark" | "system";
 
 export type SizeScale = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 
+export interface ThemeColors {
+  primary: string;
+  secondary: string;
+  background: string;
+  surface: string;
+  text: string;
+  border: string;
+  success: string;
+  warning: string;
+  danger: string;
+  muted: string;
+  info: string;
+  paper: string;
+  ink: string;
+  terminal: string;
+  overlay: string;
+}
+
+export interface ThemeEffects {
+  scanline: string;
+  grid: string;
+  glow: string;
+  paperTexture: string;
+}
+
 export interface ThemeTokens {
-  colors: {
-    primary: string;
-    secondary: string;
-
-    background: string;
-    surface: string;
-
-    text: string;
-    border: string;
-
-    success: string;
-    warning: string;
-    danger: string;
-  };
+  colors: ThemeColors;
 
   spacing: Record<SizeScale, string>;
 
@@ -34,6 +46,8 @@ export interface ThemeTokens {
       bold: string;
     };
   };
+
+  effects: ThemeEffects;
 }
 
 export interface Theme {

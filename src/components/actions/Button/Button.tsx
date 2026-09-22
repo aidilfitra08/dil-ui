@@ -1,6 +1,11 @@
-import { forwardRef } from "react";
+import { forwardRef, type ElementType } from "react";
 
-import type { ButtonProps, ButtonSize, ButtonVariant } from "./Button.types";
+import type {
+  ButtonComponent,
+  ButtonProps,
+  ButtonSize,
+  ButtonVariant,
+} from "./Button.types";
 import { cn } from "../../../lib/utils";
 
 const variantClasses: Record<ButtonVariant, string> = {
@@ -18,8 +23,44 @@ const variantClasses: Record<ButtonVariant, string> = {
     shadow-[var(--dil-shadow-sm)]
   `,
 
+  success: `
+    bg-[var(--dil-color-success)]
+    text-(--dil-color-text)
+    border-[var(--dil-color-border)]
+    shadow-[var(--dil-shadow-sm)]
+  `,
+
+  warning: `
+    bg-[var(--dil-color-warning)]
+    text-(--dil-color-text)
+    border-[var(--dil-color-border)]
+    shadow-[var(--dil-shadow-sm)]
+  `,
+
+  danger: `
+    bg-[var(--dil-color-danger)]
+    text-(--dil-color-text)
+    border-[var(--dil-color-border)]
+    shadow-[var(--dil-shadow-sm)]
+  `,
+
+  info: `
+    bg-[var(--dil-color-info)]
+    text-(--dil-color-text)
+    border-[var(--dil-color-border)]
+    shadow-[var(--dil-shadow-sm)]
+  `,
+
+  muted: `
+    bg-[var(--dil-color-muted)]
+    text-(--dil-color-text)
+    border-[var(--dil-color-border)]
+    shadow-[var(--dil-shadow-sm)]
+  `,
+
   outline: `
     bg-transparent
+    hover:bg-[var(--dil-color-border)]
     text-(--dil-color-text)
     border-[var(--dil-color-border)]
   `,
@@ -29,6 +70,19 @@ const variantClasses: Record<ButtonVariant, string> = {
     text-(--dil-color-text)
     border-transparent
     hover:bg-[var(--dil-color-surface)]
+  `,
+
+  terminal: `
+    group
+    relative
+    gap-0
+    border-transparent
+    bg-transparent
+    text-(--dil-color-text)
+    shadow-none
+    hover:translate-y-0
+    hover:text-(--dil-color-terminal)
+    active:translate-y-0
   `,
 };
 
@@ -76,18 +130,27 @@ const sizeClasses: Record<ButtonSize, string> = {
   `,
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+const ButtonBase = forwardRef<HTMLElement, ButtonProps>(
   (
-    { variant = "primary", size = "md", className, children, ...props },
+    {
+      as: component,
+      variant = "primary",
+      size = "md",
+      className,
+      children,
+      ...props
+    },
     ref,
   ) => {
+    const Component = component ?? ("button" as ElementType);
+
     const classes = cn(
       "inline-flex",
       "items-center",
       "justify-center",
       "gap-2",
-      "font-medium",
-      "border",
+      "font-[var(--dil-font-weight-medium)]",
+      "border-2",
       "cursor-pointer",
       "select-none",
 
@@ -106,12 +169,39 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
     );
 
+    const content =
+      variant === "terminal" ? (
+        <>
+          <span
+            aria-hidden="true"
+            className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-(--dil-color-danger)"
+          >
+            [
+          </span>
+          <span className="mx-1">{children}</span>
+          <span
+            aria-hidden="true"
+            className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-(--dil-color-danger)"
+          >
+            ]
+          </span>
+          <span
+            aria-hidden="true"
+            className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--dil-color-terminal) transition-all duration-300 group-hover:w-full"
+          />
+        </>
+      ) : (
+        children
+      );
+
     return (
-      <button ref={ref} className={classes} {...props}>
-        {children}
-      </button>
+      <Component ref={ref} className={classes} {...props}>
+        {content}
+      </Component>
     );
   },
 );
 
-Button.displayName = "Button";
+ButtonBase.displayName = "Button";
+
+export const Button = ButtonBase as ButtonComponent;

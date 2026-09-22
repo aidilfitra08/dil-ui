@@ -17,9 +17,14 @@ import { Counter } from "./components/effects/Counter";
 import { GradientText } from "./components/effects/GradientText";
 import { Marquee } from "./components/effects/Marquee";
 import { TextHover } from "./components/effects/TextHover";
+import { Terminal } from "./components/effects/Terminal";
 import { Typewriter } from "./components/effects/Typewriter";
+import { Spinner } from "./components/feedback/Spinner";
+import { Progress } from "./components/feedback/Progress";
+import { Skeleton } from "./components/feedback/Skeleton";
 import { Checkbox } from "./components/forms/Checkbox";
 import { Input } from "./components/forms/Input";
+import { FileInput } from "./components/forms/FileInput";
 import { Label } from "./components/forms/Label/Label";
 import { Radio } from "./components/forms/Radio";
 import { Select } from "./components/forms/Select";
@@ -37,9 +42,12 @@ import {
 } from "./components/data-display/Table";
 import { Timeline, TimelineItem } from "./components/data-display/Timeline";
 import { PatternBackground } from "./components/ui/PatternBackground";
+import { LoadingBar, NeoNavbar } from "./components/ui";
 import { ThemeProvider } from "./theme";
 import type { DataTableSort } from "./components/data-display/Table";
+import type { TerminalLine } from "./components/effects/Terminal";
 import type { ThemeName } from "./theme";
+import { Calendar } from "./icons";
 
 const tableResponse = {
   header: [
@@ -200,6 +208,14 @@ function CustomTablePreview({
 function App() {
   const [tablePage, setTablePage] = useState(1);
   const [previewTheme, setPreviewTheme] = useState<ThemeName>("neobrutalism");
+  const [terminalLines, setTerminalLines] = useState<TerminalLine[]>([
+    { id: "initial-command", type: "command", text: "status" },
+    {
+      id: "initial-output",
+      type: "output",
+      text: "Components ready for review.",
+    },
+  ]);
   const [tableSort, setTableSort] = useState<DataTableSort>({
     column: "name",
     direction: "ascending",
@@ -226,6 +242,26 @@ function App() {
     setTableSort(nextSort);
     setTablePage(1);
   };
+  const handleTerminalCommand = (command: string) => {
+    const trimmedCommand = command.trim();
+
+    if (!trimmedCommand) {
+      return;
+    }
+
+    setTerminalLines((currentLines) => [
+      ...currentLines,
+      { id: `command-${Date.now()}`, type: "command", text: trimmedCommand },
+      {
+        id: `output-${Date.now()}`,
+        type: "output",
+        text:
+          trimmedCommand === "help"
+            ? "Try status, theme, or any command you would like to handle."
+            : `Command received: ${trimmedCommand}`,
+      },
+    ]);
+  };
 
   return (
     <main className="relative min-h-screen p-8">
@@ -247,8 +283,16 @@ function App() {
           <div className="flex flex-wrap items-center gap-3">
             <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
+            <Button variant="success">Success</Button>
+            <Button variant="warning">Warning</Button>
+            <Button variant="danger">Danger</Button>
+            <Button variant="info">Info</Button>
+            <Button variant="muted">Muted</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="ghost">Ghost</Button>
+            <Button as="a" variant="terminal" href="#raw-components">
+              Documentation
+            </Button>
             <IconButton aria-label="Add item">+</IconButton>
             <Avatar src="/test_img.png" alt="Avatar preview" fallback="AU" />
             <Badge>Primary</Badge>
@@ -339,6 +383,12 @@ function App() {
               className="max-w-xs border-slate-300 bg-white"
               placeholder="Email address"
             />
+            <FileInput
+              className="max-w-xs"
+              icon={<span className="text-lg">↑</span>}
+              label="Upload attachment"
+              helperText="PNG, JPG, or PDF up to 10 MB"
+            />
             <div className="flex gap-3">
               <Label>
                 <Radio name="raw-plan" value="monthly" defaultChecked />
@@ -382,6 +432,18 @@ function App() {
               text="Building DIL UI"
             />
           </div>
+          <div className="w-full max-w-xs space-y-3 ">
+            <Progress value={25} size="sm" />
+            <Progress value={60} showValue />
+            <Progress value={85} size="lg" label="Upload progress" />
+          </div>
+          <Skeleton className="w-full max-w-xs">
+            <div className="space-y-2">
+              <div className="h-5 w-2/3" />
+              <div className="h-4 w-full" />
+              <div className="h-4 w-5/6" />
+            </div>
+          </Skeleton>
         </section>
 
         <ThemeProvider theme={previewTheme} mode="system">
@@ -415,14 +477,67 @@ function App() {
                 >
                   Glassmorphism
                 </Button>
+                <Button
+                  variant={
+                    previewTheme === "retroterminal" ? "primary" : "outline"
+                  }
+                  size="sm"
+                  onClick={() => setPreviewTheme("retroterminal")}
+                >
+                  Retro Terminal
+                </Button>
+              </div>
+            </div>
+
+            <div className="mb-6 space-y-4">
+              <NeoNavbar
+                brand={
+                  <span className="text-lg font-black uppercase tracking-tight">
+                    NEO/KIT
+                  </span>
+                }
+                items={[
+                  { label: "Kit", href: "#kit" },
+                  { label: "Tokens", href: "#tokens", active: true },
+                  { label: "Layouts", href: "#layouts" },
+                  { label: "Config", href: "#config" },
+                ]}
+                actions={
+                  <div className="flex items-center gap-2">
+                    <Button size="sm">⚡ Primary Action</Button>
+                    <IconButton aria-label="Bookmark">★</IconButton>
+                  </div>
+                }
+              />
+              <div className="space-y-3">
+                <LoadingBar value={42} label="Upload progress" />
+                <LoadingBar
+                  value={72}
+                  variant="secondary"
+                  label="Processing progress"
+                />
+                <LoadingBar
+                  indeterminate
+                  variant="info"
+                  label="Loading content"
+                />
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               <Button>Primary</Button>
               <Button variant="secondary">Secondary</Button>
+              <Button variant="success">Success</Button>
+              <Button variant="warning">Warning</Button>
+              <Button variant="danger">Danger</Button>
+              <Button variant="info">Info</Button>
+              <Button variant="muted">Muted</Button>
               <Button variant="outline">Outline</Button>
               <Button variant="ghost">Ghost</Button>
+              <Button as="a" variant="terminal" href="#themed-components">
+                Documentation
+              </Button>
+              <Calendar size={24} />
               <IconButton aria-label="Add item">+</IconButton>
               <Avatar src="/test_img.png" alt="Avatar preview" fallback="AU" />
               <Badge>Primary</Badge>
@@ -437,6 +552,7 @@ function App() {
                 <h3 className="text-lg font-semibold">Card Title</h3>
                 Card preview
               </Card>
+
               <CustomTablePreview
                 data={pagedTableData}
                 page={tablePage}
@@ -447,6 +563,8 @@ function App() {
                 onSortChange={handleTableSort}
               />
               <DataTable
+                isLoading
+                loadingRows={3}
                 header={tableResponse.header}
                 data={pagedTableData}
                 page={tablePage}
@@ -492,6 +610,16 @@ function App() {
               <MonthPicker allowTextInput={false} className="max-w-xs" />
               <TimePicker className="max-w-xs" />
               <TimeRangePicker className="max-w-xs" />
+              <div className="w-full max-w-xs space-y-3 ">
+                <Progress value={25} size="sm" />
+                <Progress value={60} showValue />
+                <Progress value={85} size="lg" label="Upload progress" />
+              </div>
+              <div className="flex items-center gap-4">
+                <Spinner size="sm" />
+                <Spinner />
+                <Spinner size="lg" label="Loading preview" />
+              </div>
               <MultiSelect
                 className="max-w-xs"
                 options={["Product Designer", "Engineer", "Researcher"]}
@@ -511,16 +639,20 @@ function App() {
                   Yearly
                 </Label>
               </div>
-              <Select
-                className="max-w-xs"
-                defaultValue=""
-                options={[
-                  "Select a role",
-                  "Product Designer",
-                  "Engineer",
-                  "Researcher",
-                ]}
-              />
+              <Label>
+                multislect
+                <Select
+                  className="max-w-xs"
+                  defaultValue=""
+                  options={[
+                    "Select a role",
+                    "Product Designer",
+                    "Engineer",
+                    "Researcher",
+                  ]}
+                />
+                multiselect
+              </Label>
               <Label>
                 <Switch defaultChecked />
                 Enable notifications
@@ -536,10 +668,24 @@ function App() {
                 text="Hover me"
                 hoverText="Hello"
               />
+              <Terminal
+                className="w-full"
+                lines={terminalLines}
+                terminalTitle="terminal@dil-ui"
+                placeholder="Type a command (try 'help')"
+                onCommandSubmit={handleTerminalCommand}
+              />
               <Typewriter
                 className="text-xl font-semibold"
                 text="Building DIL UI"
               />
+              <Skeleton className="w-full max-w-xs">
+                <div className="space-y-2">
+                  <div className="h-5 w-2/3" />
+                  <div className="h-4 w-full" />
+                  <div className="h-4 w-5/6" />
+                </div>
+              </Skeleton>
             </div>
           </section>
         </ThemeProvider>

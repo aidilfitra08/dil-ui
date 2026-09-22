@@ -5,6 +5,8 @@ export type {
   PatternVariant,
 } from "./components/ui/PatternBackground";
 
+export * from "./components/ui";
+
 export * from "./components";
 
 export * from "./theme";

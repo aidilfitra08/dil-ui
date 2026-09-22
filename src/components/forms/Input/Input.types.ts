@@ -1,3 +1,9 @@
-import type { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends Omit<
+	InputHTMLAttributes<HTMLInputElement>,
+	"aria-invalid"
+> {
+	invalid?: boolean;
+	errorMessage?: ReactNode;
+}

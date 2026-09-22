@@ -15,6 +15,7 @@ import type {
   TableRowProps,
 } from "./Table.types";
 import { cn } from "../../../lib/utils";
+import { Skeleton } from "../../feedback/Skeleton";
 
 export const Table = forwardRef<HTMLTableElement, TableProps>(
   ({ className, children, ...props }, ref) => {
@@ -150,6 +151,8 @@ export const DataTable = forwardRef<HTMLTableElement, DataTableProps>(
       className,
       data,
       emptyContent = "No data available.",
+      isLoading = false,
+      loadingRows,
       getRowKey,
       header,
       onPageChange,
@@ -172,6 +175,7 @@ export const DataTable = forwardRef<HTMLTableElement, DataTableProps>(
     const totalPages = canPaginate
       ? Math.max(1, Math.ceil(totalItems / pageSize))
       : 1;
+    const placeholderRows = Math.max(1, loadingRows ?? pageSize ?? 5);
 
     const columns = header.map(
       (column): DataTableColumn =>
@@ -225,7 +229,20 @@ export const DataTable = forwardRef<HTMLTableElement, DataTableProps>(
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.length === 0 ? (
+            {isLoading ? (
+              Array.from({ length: placeholderRows }, (_, rowIndex) => (
+                <TableRow key={`loading-row-${rowIndex}`}>
+                  {columns.map((column) => (
+                    <TableCell key={`loading-cell-${column.key}`}>
+                      <Skeleton
+                        variant="text"
+                        aria-label={`Loading ${column.label ?? column.key}`}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={Math.max(columns.length, 1)}>
                   {emptyContent}

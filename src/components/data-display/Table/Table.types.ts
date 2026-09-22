@@ -51,6 +51,10 @@ export interface DataTableColumn {
 export interface DataTableProps extends Omit<TableProps, "children"> {
   /** Rows for the currently displayed API page. */
   data: readonly TableDataRow[];
+  /** Renders placeholder cells instead of row data while loading. */
+  isLoading?: boolean;
+  /** Number of placeholder rows rendered while loading. */
+  loadingRows?: number;
   /** Content displayed when the current page has no rows. */
   emptyContent?: ReactNode;
   /** Returns a stable React key for each row. */

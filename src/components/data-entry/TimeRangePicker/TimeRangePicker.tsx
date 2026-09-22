@@ -7,7 +7,7 @@ import type {
 import { cn } from "../../../lib/utils";
 
 const timeInputClasses =
-  "h-10 w-full rounded-[var(--dil-radius-md)] border border-[var(--dil-color-border)] bg-[var(--dil-color-surface)] px-3 text-[var(--dil-font-md)] text-[var(--dil-color-text)]";
+  "h-10 w-full rounded-(--dil-radius-md) border border-[var(--dil-color-border) bg-[var(--dil-color-surface) px-3 text-[var(--dil-font-md) text-[var(--dil-color-text)";
 
 export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
   (
@@ -35,7 +35,7 @@ export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
       <div ref={ref} className={cn("relative", "w-full", className)} {...props}>
         <button
           type="button"
-          className="flex h-10 w-full items-center rounded-[var(--dil-radius-md)] border border-[var(--dil-color-border)] bg-[var(--dil-color-surface)] px-3 text-left text-[var(--dil-font-md)] text-[var(--dil-color-text)]"
+          className="flex h-10 w-full items-center rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 text-left text-[length:--dil-font-md text-[--dil-color-text"
           aria-expanded={isOpen}
           onClick={() => setIsOpen((open) => !open)}
         >
@@ -44,8 +44,8 @@ export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
             : placeholder}
         </button>
         {isOpen ? (
-          <div className="absolute z-20 mt-2 w-72 space-y-3 border border-[var(--dil-color-border)] bg-[var(--dil-color-surface)] p-3 shadow-[var(--dil-shadow-md)]">
-            <label className="block text-[var(--dil-font-sm)]">
+          <div className="absolute z-20 mt-2 w-72 space-y-3 border border-(--dil-color-border) bg-(--dil-color-surface) p-3 shadow-(--dil-shadow-md)">
+            <label className="block text-(--dil-font-sm)">
               Start
               <input
                 className={cn("mt-1", timeInputClasses)}
@@ -56,7 +56,7 @@ export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
                 }
               />
             </label>
-            <label className="block text-[var(--dil-font-sm)]">
+            <label className="block text-(--dil-font-sm)">
               End
               <input
                 className={cn("mt-1", timeInputClasses)}
@@ -69,7 +69,7 @@ export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
             </label>
             <button
               type="button"
-              className="w-full border border-[var(--dil-color-border)] px-3 py-2"
+              className="w-full border border-(--dil-color-border) px-3 py-2"
               onClick={() => setIsOpen(false)}
             >
               Done

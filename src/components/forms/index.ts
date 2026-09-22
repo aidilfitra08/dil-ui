@@ -1,5 +1,6 @@
 export * from "./Checkbox";
 export * from "./Input";
+export * from "./FileInput";
 export * from "./Label";
 export * from "./Radio";
 export * from "./Select";

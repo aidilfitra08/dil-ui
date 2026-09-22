@@ -12,15 +12,15 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
       className={cn(
         "h-10",
         "w-full",
-        "rounded-[var(--dil-radius-md)]",
+        "rounded-(--dil-radius-md)",
         "border",
-        "border-[var(--dil-color-border)]",
-        "bg-[var(--dil-color-surface)]",
+        "border-(--dil-color-border)",
+        "bg-(--dil-color-surface)",
         "px-3",
-        "text-[var(--dil-font-md)]",
-        "text-[var(--dil-color-text)]",
+        "text-(--dil-font-md)",
+        "text-(--dil-color-text)",
         "outline-none",
-        "focus:border-[var(--dil-color-primary)]",
+        "focus:border-(--dil-color-primary)",
         className,
       )}
       onClick={(event) => {

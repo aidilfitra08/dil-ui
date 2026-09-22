@@ -5,36 +5,42 @@ export const neoBrutalismTheme: Theme = {
 
   light: {
     colors: {
-      primary: "#FFD600",
-      secondary: "#FF4D4D",
+      primary: "#FFE600",
+      secondary: "#FF6584",
 
-      background: "#FFFFFF",
+      background: "#FFFDF8",
       surface: "#FFFFFF",
 
       text: "#000000",
       border: "#000000",
 
-      success: "#00C853",
-      warning: "#FFAB00",
-      danger: "#D50000",
+      success: "#52FF00",
+      warning: "#FFE600",
+      danger: "#FF6584",
+      muted: "#4B4731",
+      info: "#00F0FF",
+      paper: "#FFFDF8",
+      ink: "#121212",
+      terminal: "#52FF00",
+      overlay: "rgba(255, 253, 248, 0.9)",
     },
 
     spacing: {
-      xs: "4px",
-      sm: "8px",
-      md: "16px",
-      lg: "24px",
-      xl: "32px",
-      "2xl": "48px",
+      xs: "6px",
+      sm: "12px",
+      md: "20px",
+      lg: "32px",
+      xl: "48px",
+      "2xl": "64px",
     },
 
     radius: {
       xs: "0px",
-      sm: "0px",
-      md: "0px",
-      lg: "0px",
-      xl: "0px",
-      "2xl": "0px",
+      sm: "2px",
+      md: "2px",
+      lg: "2px",
+      xl: "8px",
+      "2xl": "12px",
     },
 
     shadows: {
@@ -47,14 +53,14 @@ export const neoBrutalismTheme: Theme = {
     },
 
     typography: {
-      fontFamily: "Arial Black, Arial, sans-serif",
+      fontFamily: "Lexend, Arial Black, Arial, sans-serif",
       fontSizes: {
-        xs: "12px",
+        xs: "10px",
         sm: "14px",
         md: "16px",
         lg: "18px",
-        xl: "20px",
-        "2xl": "24px",
+        xl: "24px",
+        "2xl": "32px",
       },
       fontWeights: {
         regular: "400",
@@ -63,40 +69,52 @@ export const neoBrutalismTheme: Theme = {
         bold: "900",
       },
     },
+    effects: {
+      scanline: "rgba(0, 0, 0, 0.02)",
+      grid: "rgba(0, 0, 0, 0.06)",
+      glow: "rgba(255, 230, 0, 0.25)",
+      paperTexture: "none",
+    },
   },
 
   dark: {
     colors: {
-      primary: "#FFD600",
-      secondary: "#FF4D4D",
+      primary: "#FFE600",
+      secondary: "#FF6584",
 
-      background: "#111111",
+      background: "#121212",
       surface: "#222222",
 
       text: "#FFFFFF",
       border: "#FFFFFF",
 
-      success: "#00E676",
-      warning: "#FFD740",
-      danger: "#FF5252",
+      success: "#52FF00",
+      warning: "#FFE600",
+      danger: "#FF6584",
+      muted: "#B3B3B3",
+      info: "#00F0FF",
+      paper: "#222222",
+      ink: "#000000",
+      terminal: "#52FF00",
+      overlay: "rgba(18, 18, 18, 0.9)",
     },
 
     spacing: {
-      xs: "4px",
-      sm: "8px",
-      md: "16px",
-      lg: "24px",
-      xl: "32px",
-      "2xl": "48px",
+      xs: "6px",
+      sm: "12px",
+      md: "20px",
+      lg: "32px",
+      xl: "48px",
+      "2xl": "64px",
     },
 
     radius: {
       xs: "0px",
-      sm: "0px",
-      md: "0px",
-      lg: "0px",
-      xl: "0px",
-      "2xl": "0px",
+      sm: "2px",
+      md: "2px",
+      lg: "2px",
+      xl: "8px",
+      "2xl": "12px",
     },
 
     shadows: {
@@ -109,14 +127,14 @@ export const neoBrutalismTheme: Theme = {
     },
 
     typography: {
-      fontFamily: "Arial Black, Arial, sans-serif",
+      fontFamily: "Lexend, Arial Black, Arial, sans-serif",
       fontSizes: {
-        xs: "12px",
+        xs: "10px",
         sm: "14px",
         md: "16px",
         lg: "18px",
-        xl: "20px",
-        "2xl": "24px",
+        xl: "24px",
+        "2xl": "32px",
       },
       fontWeights: {
         regular: "400",
@@ -124,6 +142,12 @@ export const neoBrutalismTheme: Theme = {
         semibold: "700",
         bold: "900",
       },
+    },
+    effects: {
+      scanline: "rgba(255, 255, 255, 0.02)",
+      grid: "rgba(255, 255, 255, 0.08)",
+      glow: "rgba(255, 230, 0, 0.3)",
+      paperTexture: "none",
     },
   },
 };

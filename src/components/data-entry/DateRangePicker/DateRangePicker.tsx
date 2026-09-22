@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 
 import type {
   DateRangePickerProps,
@@ -15,20 +15,10 @@ function toDateValue(date: Date) {
 function getMonthDays(month: Date) {
   const firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
   const startOffset = firstDay.getDay();
-  const daysInMonth = new Date(
-    month.getFullYear(),
-    month.getMonth() + 1,
-    0,
-  ).getDate();
-
-  return Array.from({ length: startOffset + daysInMonth }, (_, index) =>
-    index < startOffset
-      ? undefined
-      : new Date(
-          month.getFullYear(),
-          month.getMonth(),
-          index - startOffset + 1,
-        ),
+  return Array.from(
+    { length: 35 },
+    (_, index) =>
+      new Date(month.getFullYear(), month.getMonth(), index - startOffset + 1),
   );
 }
 
@@ -50,8 +40,57 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     );
     const [isOpen, setIsOpen] = useState(false);
     const [visibleMonth, setVisibleMonth] = useState(() => new Date());
+    const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+    const rootRef = useRef<HTMLDivElement>(null);
+    const popupRef = useRef<HTMLDivElement>(null);
     const selectedValue = value ?? internalValue;
     const monthDays = getMonthDays(visibleMonth);
+
+    useEffect(() => {
+      if (!isOpen) return;
+
+      const updatePopupPosition = () => {
+        const trigger = rootRef.current?.querySelector("button");
+        const popup = popupRef.current;
+        if (!trigger || !popup) return;
+
+        const triggerRect = trigger.getBoundingClientRect();
+        const popupRect = popup.getBoundingClientRect();
+        const gap = 8;
+        const fitsBelow =
+          triggerRect.bottom + gap + popupRect.height <= window.innerHeight;
+        const top = fitsBelow
+          ? triggerRect.bottom + gap
+          : Math.max(gap, triggerRect.top - popupRect.height - gap);
+        const left = Math.min(
+          Math.max(gap, triggerRect.left),
+          window.innerWidth - popupRect.width - gap,
+        );
+
+        setPopupPosition({ top, left });
+      };
+
+      updatePopupPosition();
+      window.addEventListener("resize", updatePopupPosition);
+      window.addEventListener("scroll", updatePopupPosition, true);
+
+      const handleOutsidePointerDown = (event: PointerEvent) => {
+        const target = event.target as Node;
+        if (
+          !rootRef.current?.contains(target) &&
+          !popupRef.current?.contains(target)
+        ) {
+          setIsOpen(false);
+        }
+      };
+      document.addEventListener("pointerdown", handleOutsidePointerDown);
+
+      return () => {
+        window.removeEventListener("resize", updatePopupPosition);
+        window.removeEventListener("scroll", updatePopupPosition, true);
+        document.removeEventListener("pointerdown", handleOutsidePointerDown);
+      };
+    }, [isOpen]);
     const displayValue =
       formatValue?.(selectedValue) ??
       (selectedValue.start
@@ -69,21 +108,33 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
       if (value === undefined) setInternalValue(nextValue);
       onChange?.(nextValue);
-      if (nextValue.end) setIsOpen(false);
+      if (nextValue.end) setTimeout(() => setIsOpen(false), 50);
     };
 
     return (
-      <div ref={ref} className={cn("relative", "w-full", className)} {...props}>
+      <div
+        ref={(element) => {
+          rootRef.current = element;
+          if (typeof ref === "function") ref(element);
+          else if (ref) ref.current = element;
+        }}
+        className={cn("relative", "w-full", className)}
+        {...props}
+      >
         <button
           type="button"
-          className="flex h-10 w-full items-center rounded-[var(--dil-radius-md)] border border-[var(--dil-color-border)] bg-[var(--dil-color-surface)] px-3 text-left text-[var(--dil-font-md)] text-[var(--dil-color-text)]"
+          className="flex h-10 w-full items-center rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 text-left text-(length:--dil-font-md) text-(--dil-color-text)"
           aria-expanded={isOpen}
           onClick={() => setIsOpen((open) => !open)}
         >
           {displayValue || placeholder}
         </button>
         {isOpen ? (
-          <div className="absolute z-20 mt-2 w-72 border border-[var(--dil-color-border)] bg-[var(--dil-color-surface)] p-3 shadow-[var(--dil-shadow-md)]">
+          <div
+            ref={popupRef}
+            className="fixed z-20 w-72 border border-(--dil-color-border) bg-(--dil-color-surface) p-3 shadow-(--dil-shadow-md) text-(--dil-color-text)"
+            style={popupPosition}
+          >
             <div className="mb-3 flex items-center justify-between">
               <button
                 type="button"
@@ -114,30 +165,49 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 Next
               </button>
             </div>
-            <div className="grid grid-cols-7 gap-1 text-center text-[var(--dil-font-xs)]">
+            <div className="grid grid-cols-7 gap-y-1 text-center text-(--dil-font-xs)">
               {weekdays.map((day) => (
                 <span key={day}>{day}</span>
               ))}
-              {monthDays.map((date, index) =>
-                date ? (
+              {monthDays.map((date) => {
+                const dateValue = toDateValue(date);
+                const isCurrentMonth =
+                  date.getMonth() === visibleMonth.getMonth() &&
+                  date.getFullYear() === visibleMonth.getFullYear();
+                const isSelected =
+                  dateValue === selectedValue.start ||
+                  dateValue === selectedValue.end;
+                const isInRange =
+                  selectedValue.start &&
+                  selectedValue.end &&
+                  dateValue > selectedValue.start &&
+                  dateValue < selectedValue.end;
+
+                return (
                   <button
-                    key={toDateValue(date)}
+                    key={dateValue}
                     type="button"
                     className={cn(
-                      "aspect-square rounded-[var(--dil-radius-xs)]",
-                      toDateValue(date) === selectedValue.start ||
-                        toDateValue(date) === selectedValue.end
-                        ? "bg-[var(--dil-color-primary)]"
-                        : "hover:bg-[var(--dil-color-secondary)]",
+                      "aspect-square",
+                      !isCurrentMonth && "text-(--dil-color-muted)",
+                      dateValue === selectedValue.start
+                        ? "rounded-l-(--dil-radius-sm)"
+                        : "",
+                      dateValue === selectedValue.end
+                        ? "rounded-r-(--dil-radius-sm)"
+                        : "",
+                      isSelected
+                        ? "bg-(--dil-color-primary)"
+                        : isInRange
+                          ? "bg-(--dil-color-muted)"
+                          : "hover:bg-(--dil-color-secondary)",
                     )}
                     onClick={() => selectDate(date)}
                   >
                     {date.getDate()}
                   </button>
-                ) : (
-                  <span key={`empty-${index}`} />
-                ),
-              )}
+                );
+              })}
             </div>
           </div>
         ) : null}
