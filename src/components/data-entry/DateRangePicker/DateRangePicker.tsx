@@ -1,10 +1,12 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useState } from "react";
 
 import type {
   DateRangePickerProps,
   DateRangeValue,
 } from "./DateRangePicker.types";
 import { cn } from "../../../lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "../../overlay/Popover";
+import { MonthPanel, YearPanel } from "../picker-panels";
 
 const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -40,57 +42,10 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     );
     const [isOpen, setIsOpen] = useState(false);
     const [visibleMonth, setVisibleMonth] = useState(() => new Date());
-    const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
-    const rootRef = useRef<HTMLDivElement>(null);
-    const popupRef = useRef<HTMLDivElement>(null);
+    const [view, setView] = useState<"date" | "month" | "year">("date");
     const selectedValue = value ?? internalValue;
     const monthDays = getMonthDays(visibleMonth);
 
-    useEffect(() => {
-      if (!isOpen) return;
-
-      const updatePopupPosition = () => {
-        const trigger = rootRef.current?.querySelector("button");
-        const popup = popupRef.current;
-        if (!trigger || !popup) return;
-
-        const triggerRect = trigger.getBoundingClientRect();
-        const popupRect = popup.getBoundingClientRect();
-        const gap = 8;
-        const fitsBelow =
-          triggerRect.bottom + gap + popupRect.height <= window.innerHeight;
-        const top = fitsBelow
-          ? triggerRect.bottom + gap
-          : Math.max(gap, triggerRect.top - popupRect.height - gap);
-        const left = Math.min(
-          Math.max(gap, triggerRect.left),
-          window.innerWidth - popupRect.width - gap,
-        );
-
-        setPopupPosition({ top, left });
-      };
-
-      updatePopupPosition();
-      window.addEventListener("resize", updatePopupPosition);
-      window.addEventListener("scroll", updatePopupPosition, true);
-
-      const handleOutsidePointerDown = (event: PointerEvent) => {
-        const target = event.target as Node;
-        if (
-          !rootRef.current?.contains(target) &&
-          !popupRef.current?.contains(target)
-        ) {
-          setIsOpen(false);
-        }
-      };
-      document.addEventListener("pointerdown", handleOutsidePointerDown);
-
-      return () => {
-        window.removeEventListener("resize", updatePopupPosition);
-        window.removeEventListener("scroll", updatePopupPosition, true);
-        document.removeEventListener("pointerdown", handleOutsidePointerDown);
-      };
-    }, [isOpen]);
     const displayValue =
       formatValue?.(selectedValue) ??
       (selectedValue.start
@@ -108,110 +63,131 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
       if (value === undefined) setInternalValue(nextValue);
       onChange?.(nextValue);
-      if (nextValue.end) setTimeout(() => setIsOpen(false), 50);
+      if (nextValue.end) setIsOpen(false);
     };
 
     return (
-      <div
-        ref={(element) => {
-          rootRef.current = element;
-          if (typeof ref === "function") ref(element);
-          else if (ref) ref.current = element;
-        }}
-        className={cn("relative", "w-full", className)}
-        {...props}
-      >
-        <button
-          type="button"
-          className="flex h-10 w-full items-center rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 text-left text-(length:--dil-font-md) text-(--dil-color-text)"
-          aria-expanded={isOpen}
-          onClick={() => setIsOpen((open) => !open)}
-        >
-          {displayValue || placeholder}
-        </button>
-        {isOpen ? (
-          <div
-            ref={popupRef}
-            className="fixed z-20 w-72 border border-(--dil-color-border) bg-(--dil-color-surface) p-3 shadow-(--dil-shadow-md) text-(--dil-color-text)"
-            style={popupPosition}
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <div ref={ref} className="relative w-full" {...props}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                "flex h-10 w-full items-center rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 text-left text-(length:--dil-font-md) text-(--dil-color-text)",
+                className,
+              )}
+              aria-expanded={isOpen}
+            >
+              {displayValue || placeholder}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-72 p-3 text-(--dil-color-text)"
+            side="bottom"
+            align="start"
           >
-            <div className="mb-3 flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() =>
-                  setVisibleMonth(
-                    (month) =>
-                      new Date(month.getFullYear(), month.getMonth() - 1, 1),
-                  )
-                }
-              >
-                Previous
-              </button>
-              <span className="font-medium">
-                {visibleMonth.toLocaleDateString(undefined, {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  setVisibleMonth(
-                    (month) =>
-                      new Date(month.getFullYear(), month.getMonth() + 1, 1),
-                  )
-                }
-              >
-                Next
-              </button>
-            </div>
-            <div className="grid grid-cols-7 gap-y-1 text-center text-(--dil-font-xs)">
-              {weekdays.map((day) => (
-                <span key={day}>{day}</span>
-              ))}
-              {monthDays.map((date) => {
-                const dateValue = toDateValue(date);
-                const isCurrentMonth =
-                  date.getMonth() === visibleMonth.getMonth() &&
-                  date.getFullYear() === visibleMonth.getFullYear();
-                const isSelected =
-                  dateValue === selectedValue.start ||
-                  dateValue === selectedValue.end;
-                const isInRange =
-                  selectedValue.start &&
-                  selectedValue.end &&
-                  dateValue > selectedValue.start &&
-                  dateValue < selectedValue.end;
-
-                return (
+            {view === "year" ? (
+              <YearPanel
+                value={visibleMonth.getFullYear()}
+                onChange={(year) => {
+                  setVisibleMonth(new Date(year, visibleMonth.getMonth(), 1));
+                  setView("date");
+                }}
+              />
+            ) : view === "month" ? (
+              <MonthPanel
+                value={`${visibleMonth.getFullYear()}-${String(visibleMonth.getMonth() + 1).padStart(2, "0")}`}
+                onChange={(month) => {
+                  const [year, selectedMonth] = month.split("-").map(Number);
+                  setVisibleMonth(new Date(year, selectedMonth - 1, 1));
+                  setView("date");
+                }}
+              />
+            ) : (
+              <>
+                <div className="mb-3 flex items-center justify-between">
                   <button
-                    key={dateValue}
                     type="button"
-                    className={cn(
-                      "aspect-square",
-                      !isCurrentMonth && "text-(--dil-color-muted)",
-                      dateValue === selectedValue.start
-                        ? "rounded-l-(--dil-radius-sm)"
-                        : "",
-                      dateValue === selectedValue.end
-                        ? "rounded-r-(--dil-radius-sm)"
-                        : "",
-                      isSelected
-                        ? "bg-(--dil-color-primary)"
-                        : isInRange
-                          ? "bg-(--dil-color-muted)"
-                          : "hover:bg-(--dil-color-secondary)",
-                    )}
-                    onClick={() => selectDate(date)}
+                    onClick={() =>
+                      setVisibleMonth(
+                        (month) =>
+                          new Date(month.getFullYear(), month.getMonth() - 1, 1),
+                      )
+                    }
                   >
-                    {date.getDate()}
+                    Previous
                   </button>
-                );
-              })}
-            </div>
-          </div>
-        ) : null}
-      </div>
+                  <div className="flex items-center gap-1">
+                    <button type="button" onClick={() => setView("month")}>
+                      {visibleMonth.toLocaleDateString(undefined, {
+                        month: "long",
+                      })}
+                    </button>
+                    <button type="button" onClick={() => setView("year")}>
+                      {visibleMonth.getFullYear()}
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setVisibleMonth(
+                        (month) =>
+                          new Date(month.getFullYear(), month.getMonth() + 1, 1),
+                      )
+                    }
+                  >
+                    Next
+                  </button>
+                </div>
+                <div className="grid grid-cols-7 gap-y-1 text-center text-(--dil-font-xs)">
+                  {weekdays.map((day) => (
+                    <span key={day}>{day}</span>
+                  ))}
+                  {monthDays.map((date) => {
+                    const dateValue = toDateValue(date);
+                    const isCurrentMonth =
+                      date.getMonth() === visibleMonth.getMonth() &&
+                      date.getFullYear() === visibleMonth.getFullYear();
+                    const isSelected =
+                      dateValue === selectedValue.start ||
+                      dateValue === selectedValue.end;
+                    const isInRange =
+                      selectedValue.start &&
+                      selectedValue.end &&
+                      dateValue > selectedValue.start &&
+                      dateValue < selectedValue.end;
+
+                    return (
+                      <button
+                        key={dateValue}
+                        type="button"
+                        className={cn(
+                          "aspect-square",
+                          !isCurrentMonth && "text-(--dil-color-muted)",
+                          dateValue === selectedValue.start
+                            ? "rounded-l-(--dil-radius-sm)"
+                            : "",
+                          dateValue === selectedValue.end
+                            ? "rounded-r-(--dil-radius-sm)"
+                            : "",
+                          isSelected
+                            ? "bg-(--dil-color-primary)"
+                            : isInRange
+                              ? "bg-(--dil-color-muted)"
+                              : "hover:bg-(--dil-color-secondary)",
+                        )}
+                        onClick={() => selectDate(date)}
+                      >
+                        {date.getDate()}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </PopoverContent>
+        </div>
+      </Popover>
     );
   },
 );

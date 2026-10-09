@@ -6,6 +6,76 @@
 
 @source "./";
 
+/* Theme-scoped scrollbars use the active dil-ui design tokens. */
+[data-dil-theme],
+[data-dil-theme] * {
+	scrollbar-color: var(--dil-color-border) var(--dil-color-surface);
+	scrollbar-width: thin;
+}
+
+[data-dil-theme]::-webkit-scrollbar,
+[data-dil-theme] *::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+[data-dil-theme]::-webkit-scrollbar-track,
+[data-dil-theme] *::-webkit-scrollbar-track {
+	background: var(--dil-color-surface);
+}
+
+[data-dil-theme]::-webkit-scrollbar-thumb,
+[data-dil-theme] *::-webkit-scrollbar-thumb {
+	border: 2px solid var(--dil-color-surface);
+	border-radius: var(--dil-radius-sm);
+	background: var(--dil-color-border);
+}
+
+[data-dil-theme]::-webkit-scrollbar-thumb:hover,
+[data-dil-theme] *::-webkit-scrollbar-thumb:hover {
+	background: var(--dil-color-primary);
+}
+
+
+.dil-scrollbar {
+  scrollbar-color: var(--dil-color-border) var(--dil-color-surface);
+  scrollbar-width: thin;
+}
+
+.dil-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dil-scrollbar::-webkit-scrollbar-track {
+  background: var(--dil-color-surface);
+}
+
+.dil-scrollbar::-webkit-scrollbar-thumb {
+  border: 2px solid var(--dil-color-surface);
+  border-radius: var(--dil-radius-sm);
+  background: var(--dil-color-border);
+}
+
+.dil-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--dil-color-primary);
+}
+/* The native date icon is replaced by the Popover calendar trigger. */
+.dil-date-input::-webkit-calendar-picker-indicator {
+	opacity: 0;
+	 pointer-events: none;
+}
+
+.dil-date-input::-webkit-inner-spin-button,
+.dil-date-input::-webkit-clear-button {
+	display: none;
+}
+
+.dil-date-input {
+	appearance: none;
+	-webkit-appearance: none;
+}
+
 @keyframes loading-bar {
 	0% {
 		transform: translateX(-100%);
@@ -13,5 +83,29 @@
 
 	100% {
 		transform: translateX(200%);
+	}
+}
+
+@keyframes dil-toast-enter-top {
+	from {
+		opacity: 0;
+		transform: translateY(-2rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes dil-toast-enter-bottom {
+	from {
+		opacity: 0;
+		transform: translateY(2rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }

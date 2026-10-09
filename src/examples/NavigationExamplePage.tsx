@@ -12,7 +12,7 @@ const navigationItems = [
   { label: "Settings", href: "#settings", icon: "⚙" },
 ];
 
-export function NavigationExamplePage() {
+export default function NavigationExamplePage() {
   return (
     <ThemeProvider theme="retroterminal" mode="light">
       <div className="min-h-screen bg-(--dil-color-background) text-(--dil-color-text)">

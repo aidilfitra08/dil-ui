@@ -20,6 +20,11 @@ import { TextHover } from "./components/effects/TextHover";
 import { Terminal } from "./components/effects/Terminal";
 import { Typewriter } from "./components/effects/Typewriter";
 import { Spinner } from "./components/feedback/Spinner";
+import { ToastProvider, useToast } from "./components/feedback/Toast";
+import {
+  ToastProvider as ToastProviderWithThemeProvider,
+  useToast as useToastWithThemeProvider,
+} from "./components/feedback/Toast";
 import { Progress } from "./components/feedback/Progress";
 import { Skeleton } from "./components/feedback/Skeleton";
 import { Checkbox } from "./components/forms/Checkbox";
@@ -43,11 +48,41 @@ import {
 import { Timeline, TimelineItem } from "./components/data-display/Timeline";
 import { PatternBackground } from "./components/ui/PatternBackground";
 import { LoadingBar, NeoNavbar } from "./components/ui";
+import {
+  Timeline as UITimeline,
+  TimelineItem as UITimelineItem,
+} from "./components/ui/Timeline";
 import { ThemeProvider } from "./theme";
 import type { DataTableSort } from "./components/data-display/Table";
 import type { TerminalLine } from "./components/effects/Terminal";
 import type { ThemeName } from "./theme";
 import { Calendar } from "./icons";
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "./components/overlay/Popover";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./components/overlay/Dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "./components/overlay/Tooltip";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./components/overlay/Collapsible";
 
 const tableResponse = {
   header: [
@@ -205,6 +240,68 @@ function CustomTablePreview({
  *
  * For debug the component only
  */
+function ToastExample({
+  isThemeProviderEnabled = false,
+}: {
+  isThemeProviderEnabled?: boolean;
+}) {
+  const { toast } = isThemeProviderEnabled
+    ? useToastWithThemeProvider()
+    : useToast();
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button
+        variant="outline"
+        onClick={() =>
+          toast({
+            title: "Default",
+            description: "This is an informational default message.",
+            variant: "default",
+          })
+        }
+      >
+        Default toast
+      </Button>
+      <Button
+        onClick={() =>
+          toast({
+            title: "Saved",
+            description: "Your changes were saved.",
+            variant: "success",
+          })
+        }
+      >
+        Success toast
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() =>
+          toast({
+            title: "Heads up",
+            description: "This is an informational message.",
+            variant: "info",
+          })
+        }
+      >
+        Info toast
+      </Button>
+      <Button
+        variant="danger"
+        onClick={() =>
+          toast({
+            title: "Error",
+            description: "Something went wrong.",
+            variant: "error",
+          })
+        }
+      >
+        Error toast
+      </Button>
+    </div>
+  );
+}
+
 function App() {
   const [tablePage, setTablePage] = useState(1);
   const [previewTheme, setPreviewTheme] = useState<ThemeName>("neobrutalism");
@@ -264,265 +361,235 @@ function App() {
   };
 
   return (
-    <main className="relative min-h-screen p-8">
-      <PatternBackground
-        className="fixed inset-0 -z-10 dark:bg-neutral-600"
-        variant="dots"
-        opacity={0.95}
-      />
+    <ToastProvider
+      maxToasts={4}
+      visibleToasts={5}
+      position="bottom-right"
+      duration={0}
+    >
+      <main className="relative min-h-screen p-8">
+        <PatternBackground
+          className="fixed inset-0 -z-10 dark:bg-neutral-600"
+          variant="dots"
+          opacity={0.95}
+        />
 
-      <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-2">
-        <section className="border border-slate-300 bg-white p-6 shadow-sm">
-          <div className="mb-6 border-b border-slate-200 pb-4">
-            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-              Without ThemeProvider
-            </p>
-            <h1 className="mt-1 text-2xl font-semibold">Raw components</h1>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <Button>Primary</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="success">Success</Button>
-            <Button variant="warning">Warning</Button>
-            <Button variant="danger">Danger</Button>
-            <Button variant="info">Info</Button>
-            <Button variant="muted">Muted</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button as="a" variant="terminal" href="#raw-components">
-              Documentation
-            </Button>
-            <IconButton aria-label="Add item">+</IconButton>
-            <Avatar src="/test_img.png" alt="Avatar preview" fallback="AU" />
-            <Badge>Primary</Badge>
-            <Badge variant="secondary">Secondary</Badge>
-            <Badge variant="outline">Outline</Badge>
-            <Card className="w-44">
-              <img
-                src="/test_image_card.png"
-                alt="Card preview"
-                className="h-24 w-full object-cover"
-              />
-              <h3 className="text-lg font-semibold">Card Title</h3>
-              Card preview
-            </Card>
-            <CustomTablePreview
-              data={pagedTableData}
-              page={tablePage}
-              pageSize={pageSize}
-              sort={tableSort}
-              totalItems={tableResponse.data.length}
-              onPageChange={setTablePage}
-              onSortChange={handleTableSort}
-            />
-            <DataTable
-              header={tableResponse.header}
-              data={pagedTableData}
-              page={tablePage}
-              pageSize={pageSize}
-              sort={tableSort}
-              totalItems={tableResponse.data.length}
-              striped
-              getRowKey={(row) => row.id as number}
-              renderSortIcon={(direction) => (
-                <span
-                  aria-hidden="true"
-                  className="inline-block transition-transform duration-200"
-                >
-                  {direction === "descending" ? "v" : "^"}
-                </span>
-              )}
-              onPageChange={setTablePage}
-              onSortChange={handleTableSort}
-            />
-            <DataTable
-              {...emptyTableResponse}
-              emptyContent={emptyTableContent}
-            />
-            <Timeline className="w-full">
-              <TimelineItem>
-                <p className="font-medium">Project created</p>
-                <p className="text-sm text-slate-600">Today, 9:00 AM</p>
-              </TimelineItem>
-              <TimelineItem>
-                <p className="font-medium">First components added</p>
-                <p className="text-sm text-slate-600">Today, 10:30 AM</p>
-              </TimelineItem>
-            </Timeline>
-            <Combobox
-              className="max-w-xs border-slate-300 bg-white"
-              placeholder="Choose a role"
-              options={["Product Designer", "Engineer", "Researcher"]}
-            />
-            <DatePicker className="max-w-xs border-slate-300 bg-white" />
-            <DatePicker
-              allowTextInput={false}
-              className="max-w-xs border-slate-300 bg-white"
-            />
-            <DateRangePicker className="max-w-xs" />
-            <DateTimePicker
-              allowTextInput={false}
-              className="max-w-xs border-slate-300 bg-white"
-            />
-            <MonthPicker
-              allowTextInput={false}
-              className="max-w-xs border-slate-300 bg-white"
-            />
-            <TimePicker className="max-w-xs border-slate-300 bg-white" />
-            <TimeRangePicker className="max-w-xs" />
-            <MultiSelect
-              className="max-w-xs border-slate-300 bg-white"
-              options={["Product Designer", "Engineer", "Researcher"]}
-            />
-            <Label>
-              <Checkbox defaultChecked />
-              Receive updates
-            </Label>
-            <Input
-              className="max-w-xs border-slate-300 bg-white"
-              placeholder="Email address"
-            />
-            <FileInput
-              className="max-w-xs"
-              icon={<span className="text-lg">↑</span>}
-              label="Upload attachment"
-              helperText="PNG, JPG, or PDF up to 10 MB"
-            />
-            <div className="flex gap-3">
-              <Label>
-                <Radio name="raw-plan" value="monthly" defaultChecked />
-                Monthly
-              </Label>
-              <Label>
-                <Radio name="raw-plan" value="yearly" />
-                Yearly
-              </Label>
-            </div>
-            <Select
-              className="max-w-xs border-slate-300 bg-white"
-              defaultValue=""
-              options={[
-                "Select a role",
-                "Product Designer",
-                "Engineer",
-                "Researcher",
-              ]}
-            />
-            <Label>
-              <Switch defaultChecked />
-              Enable notifications
-            </Label>
-            <TextArea
-              className="max-w-xs border-slate-300 bg-white"
-              placeholder="Write a message"
-            />
-            <Counter prefix="$" value={12500} suffix=" saved" />
-            <GradientText className="text-2xl font-bold">DIL UI</GradientText>
-            <Marquee className="border-y border-slate-300 py-2">
-              New components are ready for review
-            </Marquee>
-            <TextHover
-              className="text-xl font-semibold"
-              text="Hover me"
-              hoverText="Hello"
-            />
-            <Typewriter
-              className="text-xl font-semibold"
-              text="Building DIL UI"
-            />
-          </div>
-          <div className="w-full max-w-xs space-y-3 ">
-            <Progress value={25} size="sm" />
-            <Progress value={60} showValue />
-            <Progress value={85} size="lg" label="Upload progress" />
-          </div>
-          <Skeleton className="w-full max-w-xs">
-            <div className="space-y-2">
-              <div className="h-5 w-2/3" />
-              <div className="h-4 w-full" />
-              <div className="h-4 w-5/6" />
-            </div>
-          </Skeleton>
-        </section>
-
-        <ThemeProvider theme={previewTheme} mode="system">
-          <section
-            className="border border-(--dil-color-border) bg-(--dil-color-surface) p-6 shadow-(--dil-shadow-sm)"
-            style={{ fontFamily: "var(--dil-font-family)" }}
-          >
-            <div className="mb-6 border-b border-(--dil-color-border) pb-4">
-              <p className="text-(length:--dil-font-sm) font-semibold uppercase tracking-wide text-(--dil-color-text)">
-                With ThemeProvider
+        <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-2">
+          <section className="border border-slate-300 bg-white p-6 shadow-sm">
+            <div className="mb-6 border-b border-slate-200 pb-4">
+              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Without ThemeProvider
               </p>
-              <h2 className="mt-1 text-(length:--dil-font-2xl) font-semibold text-(--dil-color-text)">
-                {previewTheme} theme
-              </h2>
-              <div className="mt-4 flex gap-2">
-                <Button
-                  variant={
-                    previewTheme === "neobrutalism" ? "primary" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setPreviewTheme("neobrutalism")}
-                >
-                  Neobrutalism
-                </Button>
-                <Button
-                  variant={
-                    previewTheme === "glassmorphism" ? "primary" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setPreviewTheme("glassmorphism")}
-                >
-                  Glassmorphism
-                </Button>
-                <Button
-                  variant={
-                    previewTheme === "retroterminal" ? "primary" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setPreviewTheme("retroterminal")}
-                >
-                  Retro Terminal
-                </Button>
-              </div>
+              <h1 className="mt-1 text-2xl font-semibold">Raw components</h1>
             </div>
 
-            <div className="mb-6 space-y-4">
-              <NeoNavbar
-                brand={
-                  <span className="text-lg font-black uppercase tracking-tight">
-                    NEO/KIT
-                  </span>
-                }
-                items={[
-                  { label: "Kit", href: "#kit" },
-                  { label: "Tokens", href: "#tokens", active: true },
-                  { label: "Layouts", href: "#layouts" },
-                  { label: "Config", href: "#config" },
-                ]}
-                actions={
-                  <div className="flex items-center gap-2">
-                    <Button size="sm">⚡ Primary Action</Button>
-                    <IconButton aria-label="Bookmark">★</IconButton>
-                  </div>
-                }
-              />
-              <div className="space-y-3">
-                <LoadingBar value={42} label="Upload progress" />
-                <LoadingBar
-                  value={72}
-                  variant="secondary"
-                  label="Processing progress"
-                />
-                <LoadingBar
-                  indeterminate
-                  variant="info"
-                  label="Loading content"
-                />
+            <section className="mb-6 space-y-3 border-b border-slate-200 pb-6">
+              <h2 className="text-xl font-semibold">Toast examples</h2>
+              <ToastExample isThemeProviderEnabled={false} />
+            </section>
+
+            <section className="mb-6 space-y-4 border-b border-slate-200 pb-6">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  Overlay primitive
+                </p>
+                <h2 className="mt-1 text-xl font-semibold">
+                  Popover composition examples
+                </h2>
               </div>
-            </div>
+
+              <div className="flex flex-wrap items-start gap-4">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button>Simple popover</Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <div className="space-y-3">
+                      <p className="font-medium">Interactive content</p>
+                      <p className="text-sm text-slate-600">
+                        This floating layer works without a ThemeProvider.
+                      </p>
+                      <PopoverClose asChild>
+                        <Button size="sm" variant="outline">
+                          Close
+                        </Button>
+                      </PopoverClose>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline">Date picker composition</Button>
+                  </PopoverTrigger>
+                  <PopoverContent side="bottom" align="start">
+                    <div className="space-y-3">
+                      <p className="font-medium">Select a date</p>
+                      <DatePicker aria-label="Select date" />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="secondary">Combobox composition</Button>
+                  </PopoverTrigger>
+                  <PopoverContent side="bottom" align="start">
+                    <Combobox
+                      aria-label="Search people"
+                      placeholder="Search people"
+                      options={["Alya Rahman", "Daniel Lee", "Nadia Ismail"]}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="info">Open dialog</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Raw component dialog</DialogTitle>
+                      <DialogDescription>
+                        This modal is rendered without ThemeProvider.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <Input placeholder="Enter a value" />
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <DialogClose asChild>
+                        <Button>Save</Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" aria-label="Raw tooltip example">
+                      Hover or focus
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Helpful context without ThemeProvider.
+                  </TooltipContent>
+                </Tooltip>
+
+                <div className="w-full">
+                  <Collapsible>
+                    <CollapsibleTrigger className="rounded border border-slate-300 px-3 py-2 font-medium hover:bg-slate-100">
+                      Toggle details
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-2 rounded border border-slate-200 p-3 text-sm text-slate-600">
+                      This content can be expanded and collapsed without a
+                      theme.
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+              </div>
+            </section>
+
+            <section className="mb-6 space-y-3 border-b border-slate-200 pb-6">
+              <h2 className="text-xl font-bold uppercase">
+                Horizontal roadmap
+              </h2>
+              <UITimeline orientation="horizontal" className="w-full">
+                <UITimelineItem
+                  status="completed"
+                  badge="Phase 01"
+                  title="Q1 • Foundation"
+                  description="Primitive layout system and shadow tokens."
+                  footer="100% DONE"
+                />
+                <UITimelineItem
+                  status="active"
+                  badge="Phase 02"
+                  title="Q2 • Multi-theme"
+                  description="Custom theme generators and dynamic borders."
+                  footer="65% ACTIVE"
+                />
+                <UITimelineItem
+                  status="queued"
+                  badge="Phase 03"
+                  title="Q3 • Plugins & API"
+                  description="Ecosystem SDK and interactive playground."
+                  footer="QUEUED"
+                />
+              </UITimeline>
+            </section>
+
+            <section className="mb-6 space-y-3 border-b border-slate-200 pb-6">
+              <h2 className="text-xl font-bold uppercase">
+                Timeline &amp; activity
+              </h2>
+              <Timeline className="w-full">
+                <TimelineItem
+                  status="completed"
+                  badge="Step 01 • Done"
+                  title="Project initialization"
+                  timestamp="09:15 AM"
+                  description="Repo bootstrapped and design tokens compiled."
+                />
+                <TimelineItem
+                  status="active"
+                  badge="Step 02 • Active"
+                  title="Component library build"
+                  timestamp="45m elapsed"
+                  description="Compiling components and verifying contrast."
+                />
+                <TimelineItem
+                  status="queued"
+                  badge="Step 03 • Queued"
+                  title="Production deployment"
+                  timestamp="18:00 EST"
+                  description="Scheduled CDN propagation after the build completes."
+                />
+              </Timeline>
+            </section>
+
+            <section className="mb-6 space-y-4 border-b border-slate-200 pb-6">
+              <div className="flex items-center justify-between bg-black px-3 py-2 text-sm font-black uppercase text-yellow-300 shadow-[3px_3px_0px_#000]">
+                <span>01 Vertical stepper [status-driven nodes]</span>
+                <span>FLOW_V1</span>
+              </div>
+              <div className="border-[3px] border-black bg-white p-4 shadow-[6px_6px_0px_#000]">
+                <Timeline>
+                  <TimelineItem
+                    status="completed"
+                    badge="Step 01 • Done"
+                    title="Project initialization"
+                    timestamp="09:15 AM"
+                    description="Repo bootstrapped, design tokens compiled, CSS schema locked."
+                    footer="COMMITTED • @alex_neo"
+                  />
+                  <TimelineItem
+                    status="active"
+                    badge="Step 02 • Active"
+                    title="Component library build"
+                    timestamp="45m elapsed"
+                    description="Compiling components, generating hard shadows, verifying contrast."
+                    progress={78}
+                    actions={
+                      <>
+                        <Button size="sm">View logs</Button>
+                        <Button size="sm" variant="outline">
+                          Retry
+                        </Button>
+                      </>
+                    }
+                  />
+                  <TimelineItem
+                    status="queued"
+                    badge="Step 03 • Queued"
+                    title="Production deployment"
+                    timestamp="18:00 EST"
+                    description="Automated CDN propagation after step 02 completion."
+                  />
+                </Timeline>
+              </div>
+            </section>
 
             <div className="flex flex-wrap items-center gap-3">
               <Button>Primary</Button>
@@ -534,10 +601,9 @@ function App() {
               <Button variant="muted">Muted</Button>
               <Button variant="outline">Outline</Button>
               <Button variant="ghost">Ghost</Button>
-              <Button as="a" variant="terminal" href="#themed-components">
+              <Button as="a" variant="terminal" href="#raw-components">
                 Documentation
               </Button>
-              <Calendar size={24} />
               <IconButton aria-label="Add item">+</IconButton>
               <Avatar src="/test_img.png" alt="Avatar preview" fallback="AU" />
               <Badge>Primary</Badge>
@@ -552,7 +618,6 @@ function App() {
                 <h3 className="text-lg font-semibold">Card Title</h3>
                 Card preview
               </Card>
-
               <CustomTablePreview
                 data={pagedTableData}
                 page={tablePage}
@@ -563,8 +628,6 @@ function App() {
                 onSortChange={handleTableSort}
               />
               <DataTable
-                isLoading
-                loadingRows={3}
                 header={tableResponse.header}
                 data={pagedTableData}
                 page={tablePage}
@@ -591,76 +654,83 @@ function App() {
               <Timeline className="w-full">
                 <TimelineItem>
                   <p className="font-medium">Project created</p>
-                  <p className="text-(length:--dil-font-sm)">Today, 9:00 AM</p>
+                  <p className="text-sm text-slate-600">Today, 9:00 AM</p>
                 </TimelineItem>
                 <TimelineItem>
                   <p className="font-medium">First components added</p>
-                  <p className="text-(length:--dil-font-sm)">Today, 10:30 AM</p>
+                  <p className="text-sm text-slate-600">Today, 10:30 AM</p>
                 </TimelineItem>
               </Timeline>
               <Combobox
-                className="max-w-xs"
+                className="max-w-xs border-slate-300 bg-white"
                 placeholder="Choose a role"
                 options={["Product Designer", "Engineer", "Researcher"]}
               />
-              <DatePicker className="max-w-xs" />
-              <DatePicker allowTextInput={false} className="max-w-xs" />
+              <DatePicker className="max-w-xs border-slate-300 bg-white" />
+              <DatePicker
+                allowTextInput={false}
+                className="max-w-xs border-slate-300 bg-white"
+              />
               <DateRangePicker className="max-w-xs" />
-              <DateTimePicker allowTextInput={false} className="max-w-xs" />
-              <MonthPicker allowTextInput={false} className="max-w-xs" />
-              <TimePicker className="max-w-xs" />
+              <DateTimePicker
+                allowTextInput={false}
+                className="max-w-xs border-slate-300 bg-white"
+              />
+              <MonthPicker
+                allowTextInput={false}
+                className="max-w-xs border-slate-300 bg-white"
+              />
+              <TimePicker className="max-w-xs border-slate-300 bg-white" />
               <TimeRangePicker className="max-w-xs" />
-              <div className="w-full max-w-xs space-y-3 ">
-                <Progress value={25} size="sm" />
-                <Progress value={60} showValue />
-                <Progress value={85} size="lg" label="Upload progress" />
-              </div>
-              <div className="flex items-center gap-4">
-                <Spinner size="sm" />
-                <Spinner />
-                <Spinner size="lg" label="Loading preview" />
-              </div>
               <MultiSelect
-                className="max-w-xs"
+                className="max-w-xs border-slate-300 bg-white"
                 options={["Product Designer", "Engineer", "Researcher"]}
               />
               <Label>
                 <Checkbox defaultChecked />
                 Receive updates
               </Label>
-              <Input className="max-w-xs" placeholder="Email address" />
+              <Input
+                className="max-w-xs border-slate-300 bg-white"
+                placeholder="Email address"
+              />
+              <FileInput
+                className="max-w-xs"
+                icon={<span className="text-lg">↑</span>}
+                label="Upload attachment"
+                helperText="PNG, JPG, or PDF up to 10 MB"
+              />
               <div className="flex gap-3">
                 <Label>
-                  <Radio name="themed-plan" value="monthly" defaultChecked />
+                  <Radio name="raw-plan" value="monthly" defaultChecked />
                   Monthly
                 </Label>
                 <Label>
-                  <Radio name="themed-plan" value="yearly" />
+                  <Radio name="raw-plan" value="yearly" />
                   Yearly
                 </Label>
               </div>
-              <Label>
-                multislect
-                <Select
-                  className="max-w-xs"
-                  defaultValue=""
-                  options={[
-                    "Select a role",
-                    "Product Designer",
-                    "Engineer",
-                    "Researcher",
-                  ]}
-                />
-                multiselect
-              </Label>
+              <Select
+                className="max-w-xs border-slate-300 bg-white"
+                defaultValue=""
+                options={[
+                  "Select a role",
+                  "Product Designer",
+                  "Engineer",
+                  "Researcher",
+                ]}
+              />
               <Label>
                 <Switch defaultChecked />
                 Enable notifications
               </Label>
-              <TextArea className="max-w-xs" placeholder="Write a message" />
+              <TextArea
+                className="max-w-xs border-slate-300 bg-white"
+                placeholder="Write a message"
+              />
               <Counter prefix="$" value={12500} suffix=" saved" />
               <GradientText className="text-2xl font-bold">DIL UI</GradientText>
-              <Marquee className="border-y border-(--dil-color-border) py-2">
+              <Marquee className="border-y border-slate-300 py-2">
                 New components are ready for review
               </Marquee>
               <TextHover
@@ -668,29 +738,544 @@ function App() {
                 text="Hover me"
                 hoverText="Hello"
               />
-              <Terminal
-                className="w-full"
-                lines={terminalLines}
-                terminalTitle="terminal@dil-ui"
-                placeholder="Type a command (try 'help')"
-                onCommandSubmit={handleTerminalCommand}
-              />
               <Typewriter
                 className="text-xl font-semibold"
                 text="Building DIL UI"
               />
-              <Skeleton className="w-full max-w-xs">
-                <div className="space-y-2">
-                  <div className="h-5 w-2/3" />
-                  <div className="h-4 w-full" />
-                  <div className="h-4 w-5/6" />
-                </div>
-              </Skeleton>
             </div>
+            <div className="w-full max-w-xs space-y-3 ">
+              <Progress value={25} size="sm" />
+              <Progress value={60} showValue />
+              <Progress value={85} size="lg" label="Upload progress" />
+            </div>
+            <Skeleton className="w-full max-w-xs">
+              <div className="space-y-2">
+                <div className="h-5 w-2/3" />
+                <div className="h-4 w-full" />
+                <div className="h-4 w-5/6" />
+              </div>
+            </Skeleton>
           </section>
-        </ThemeProvider>
-      </div>
-    </main>
+
+          <ThemeProvider theme={previewTheme} mode="system">
+            <ToastProviderWithThemeProvider
+              duration={0}
+              maxToasts={4}
+              visibleToasts={5}
+              variant="stack-and-list"
+            >
+              <section
+                className="border border-(--dil-color-border) bg-(--dil-color-surface) p-6 shadow-(--dil-shadow-sm)"
+                style={{ fontFamily: "var(--dil-font-family)" }}
+              >
+                <div className="mb-6 border-b border-(--dil-color-border) pb-4">
+                  <p className="text-(length:--dil-font-sm) font-semibold uppercase tracking-wide text-(--dil-color-text)">
+                    With ThemeProvider
+                  </p>
+                  <h2 className="mt-1 text-(length:--dil-font-2xl) font-semibold text-(--dil-color-text)">
+                    {previewTheme} theme
+                  </h2>
+                  <div className="mt-4 flex gap-2">
+                    <Button
+                      variant={
+                        previewTheme === "neobrutalism" ? "primary" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setPreviewTheme("neobrutalism")}
+                    >
+                      Neobrutalism
+                    </Button>
+                    <Button
+                      variant={
+                        previewTheme === "glassmorphism" ? "primary" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setPreviewTheme("glassmorphism")}
+                    >
+                      Glassmorphism
+                    </Button>
+                    <Button
+                      variant={
+                        previewTheme === "retroterminal" ? "primary" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setPreviewTheme("retroterminal")}
+                    >
+                      Retro Terminal
+                    </Button>
+                  </div>
+                </div>
+
+                <section className="mb-6 space-y-4 border-b border-(--dil-color-border) pb-6">
+                  <div>
+                    <p className="text-(length:--dil-font-sm) font-semibold uppercase tracking-wide text-(--dil-color-text)">
+                      Overlay primitive
+                    </p>
+                    <h2 className="mt-1 text-(length:--dil-font-2xl) font-semibold text-(--dil-color-text)">
+                      Popover composition examples
+                    </h2>
+                  </div>
+
+                  <div className="flex flex-wrap items-start gap-4">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button>Simple popover</Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <div className="space-y-3">
+                          <p className="font-medium">Interactive content</p>
+                          <p className="text-sm opacity-75">
+                            This floating layer supports click outside and
+                            Escape.
+                          </p>
+                          <PopoverClose asChild>
+                            <Button size="sm" variant="outline">
+                              Close
+                            </Button>
+                          </PopoverClose>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline">
+                          <Calendar aria-hidden="true" />
+                          Date picker composition
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent side="bottom" align="start">
+                        <div className="space-y-3">
+                          <p className="font-medium">Select a date</p>
+                          <DatePicker aria-label="Select date" />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="secondary">
+                          Combobox composition
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent side="bottom" align="start">
+                        <Combobox
+                          aria-label="Search people"
+                          placeholder="Search people"
+                          options={[
+                            "Alya Rahman",
+                            "Daniel Lee",
+                            "Nadia Ismail",
+                          ]}
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="info">Open themed dialog</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Themed settings</DialogTitle>
+                          <DialogDescription>
+                            Dialog content uses the active design tokens.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <Input placeholder="Setting value" />
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DialogClose>
+                          <DialogClose asChild>
+                            <Button>Save</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          aria-label="Themed tooltip example"
+                        >
+                          Hover or focus
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Helpful context using the active theme.
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <div className="w-full">
+                      <Collapsible>
+                        <CollapsibleTrigger className="rounded border border-(--dil-color-border) px-3 py-2 font-medium hover:bg-(--dil-color-secondary)">
+                          Toggle themed details
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2 rounded border border-(--dil-color-border) p-3 text-sm opacity-80">
+                          This content uses the active theme tokens.
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="mb-6 space-y-3 border-b border-(--dil-color-border) pb-6">
+                  <h2 className="text-(length:--dil-font-xl) font-(--dil-font-weight-bold) uppercase">
+                    Horizontal roadmap
+                  </h2>
+                  <UITimeline orientation="horizontal" className="w-full">
+                    <UITimelineItem
+                      status="completed"
+                      badge="Phase 01"
+                      title="Q1 • Foundation"
+                      description="Primitive layout system and shadow tokens."
+                      footer="100% DONE"
+                    />
+                    <UITimelineItem
+                      status="active"
+                      badge="Phase 02"
+                      title="Q2 • Multi-theme"
+                      description="Custom theme generators and dynamic borders."
+                      footer="65% ACTIVE"
+                    />
+                    <UITimelineItem
+                      status="active"
+                      badge="Phase 02"
+                      title="Q2 • Multi-theme"
+                      description="Custom theme generators and dynamic borders."
+                      footer="65% ACTIVE"
+                    />
+                    <UITimelineItem
+                      status="queued"
+                      badge="Phase 03"
+                      title="Q3 • Plugins & API"
+                      description="Ecosystem SDK and interactive playground."
+                      footer="QUEUED"
+                    />
+                    <UITimelineItem
+                      status="queued"
+                      badge="Phase 03"
+                      title="Q3 • Plugins & API"
+                      description="Ecosystem SDK and interactive playground."
+                      footer="QUEUED"
+                    />
+                    <UITimelineItem
+                      status="queued"
+                      badge="Phase 03"
+                      title="Q3 • Plugins & API"
+                      description="Ecosystem SDK and interactive playground."
+                      footer="QUEUED"
+                    />
+                  </UITimeline>
+                </section>
+
+                <section className="mb-6 space-y-3 border-b border-(--dil-color-border) pb-6">
+                  <h2 className="text-(length:--dil-font-xl) font-(--dil-font-weight-bold) uppercase text-(--dil-color-text)">
+                    Timeline &amp; activity
+                  </h2>
+                  <Timeline className="w-full">
+                    <TimelineItem
+                      status="completed"
+                      badge="Step 01 • Done"
+                      title="Project initialization"
+                      timestamp="09:15 AM"
+                      description="Repo bootstrapped and design tokens compiled."
+                    />
+                    <TimelineItem
+                      status="active"
+                      badge="Step 02 • Active"
+                      title="Component library build"
+                      timestamp="45m elapsed"
+                      description="Compiling components and verifying contrast."
+                    />
+                    <TimelineItem
+                      status="queued"
+                      badge="Step 03 • Queued"
+                      title="Production deployment"
+                      timestamp="18:00 EST"
+                      description="Scheduled CDN propagation after the build completes."
+                    />
+                  </Timeline>
+                </section>
+
+                <section className="mb-6 space-y-4 border-b border-(--dil-color-border) pb-6">
+                  <div className="flex items-center justify-between bg-(--dil-color-ink) px-3 py-2 text-(length:--dil-font-sm) font-(--dil-font-weight-bold) uppercase text-(--dil-color-primary) shadow-(--dil-shadow-md)">
+                    <span>01 Vertical stepper [status-driven nodes]</span>
+                    <span>FLOW_V1</span>
+                  </div>
+                  <div className="border-2 border-(--dil-color-border) bg-(--dil-color-surface) p-4 shadow-(--dil-shadow-lg)">
+                    <Timeline>
+                      <TimelineItem
+                        status="completed"
+                        badge="Step 01 • Done"
+                        title="Project initialization"
+                        timestamp="09:15 AM"
+                        description="Repo bootstrapped, design tokens compiled, CSS schema locked."
+                        footer="COMMITTED • @alex_neo"
+                      />
+                      <TimelineItem
+                        status="active"
+                        badge="Step 02 • Active"
+                        title="Component library build"
+                        timestamp="45m elapsed"
+                        description="Compiling components, generating hard shadows, verifying contrast."
+                        progress={78}
+                        actions={
+                          <>
+                            <Button size="sm">View logs</Button>
+                            <Button size="sm" variant="outline">
+                              Retry
+                            </Button>
+                          </>
+                        }
+                      />
+                      <TimelineItem
+                        status="queued"
+                        badge="Step 03 • Queued"
+                        title="Production deployment"
+                        timestamp="18:00 EST"
+                        description="Automated CDN propagation after step 02 completion."
+                      />
+                    </Timeline>
+                  </div>
+                </section>
+
+                <div className="mb-6 space-y-4">
+                  <NeoNavbar
+                    brand={
+                      <span className="text-lg font-black uppercase tracking-tight">
+                        NEO/KIT
+                      </span>
+                    }
+                    items={[
+                      { label: "Kit", href: "#kit" },
+                      { label: "Tokens", href: "#tokens", active: true },
+                      { label: "Layouts", href: "#layouts" },
+                      { label: "Config", href: "#config" },
+                    ]}
+                    actions={
+                      <div className="flex items-center gap-2">
+                        <Button size="sm">⚡ Primary Action</Button>
+                        <IconButton aria-label="Bookmark">★</IconButton>
+                      </div>
+                    }
+                  />
+                  <div className="space-y-3">
+                    <LoadingBar value={42} label="Upload progress" />
+                    <LoadingBar
+                      value={72}
+                      variant="secondary"
+                      label="Processing progress"
+                    />
+                    <LoadingBar
+                      indeterminate
+                      variant="info"
+                      label="Loading content"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button>Primary</Button>
+                  <Button variant="secondary">Secondary</Button>
+                  <Button variant="success">Success</Button>
+                  <Button variant="warning">Warning</Button>
+                  <Button variant="danger">Danger</Button>
+                  <Button variant="info">Info</Button>
+                  <Button variant="muted">Muted</Button>
+                  <Button variant="outline">Outline</Button>
+                  <Button variant="ghost">Ghost</Button>
+                  <Button as="a" variant="terminal" href="#themed-components">
+                    Documentation
+                  </Button>
+                  <Calendar size={24} />
+                  <IconButton aria-label="Add item">+</IconButton>
+                  <Avatar
+                    src="/test_img.png"
+                    alt="Avatar preview"
+                    fallback="AU"
+                  />
+                  <Badge>Primary</Badge>
+                  <Badge variant="secondary">Secondary</Badge>
+                  <Badge variant="outline">Outline</Badge>
+                  <Card className="w-44">
+                    <img
+                      src="/test_image_card.png"
+                      alt="Card preview"
+                      className="h-24 w-full object-cover"
+                    />
+                    <h3 className="text-lg font-semibold">Card Title</h3>
+                    Card preview
+                  </Card>
+
+                  <CustomTablePreview
+                    data={pagedTableData}
+                    page={tablePage}
+                    pageSize={pageSize}
+                    sort={tableSort}
+                    totalItems={tableResponse.data.length}
+                    onPageChange={setTablePage}
+                    onSortChange={handleTableSort}
+                  />
+                  <DataTable
+                    isLoading
+                    loadingRows={3}
+                    header={tableResponse.header}
+                    data={pagedTableData}
+                    page={tablePage}
+                    pageSize={pageSize}
+                    sort={tableSort}
+                    totalItems={tableResponse.data.length}
+                    striped
+                    getRowKey={(row) => row.id as number}
+                    renderSortIcon={(direction) => (
+                      <span
+                        aria-hidden="true"
+                        className="inline-block transition-transform duration-200"
+                      >
+                        {direction === "descending" ? "v" : "^"}
+                      </span>
+                    )}
+                    onPageChange={setTablePage}
+                    onSortChange={handleTableSort}
+                  />
+                  <DataTable
+                    {...emptyTableResponse}
+                    emptyContent={emptyTableContent}
+                  />
+                  <Timeline className="w-full">
+                    <TimelineItem>
+                      <p className="font-medium">Project created</p>
+                      <p className="text-(length:--dil-font-sm)">
+                        Today, 9:00 AM
+                      </p>
+                    </TimelineItem>
+                    <TimelineItem>
+                      <p className="font-medium">First components added</p>
+                      <p className="text-(length:--dil-font-sm)">
+                        Today, 10:30 AM
+                      </p>
+                    </TimelineItem>
+                  </Timeline>
+                  <Combobox
+                    className="max-w-xs"
+                    placeholder="Choose a role"
+                    options={["Product Designer", "Engineer", "Researcher"]}
+                  />
+                  <DatePicker className="max-w-xs" />
+                  <DatePicker allowTextInput={false} className="max-w-xs" />
+                  <DateRangePicker className="max-w-xs" />
+                  <DateTimePicker allowTextInput={false} className="max-w-xs" />
+                  <MonthPicker allowTextInput={false} className="max-w-xs" />
+                  <TimePicker className="max-w-xs" />
+                  <TimeRangePicker className="max-w-xs" />
+                  <div className="w-full max-w-xs space-y-3 ">
+                    <Progress value={25} size="sm" />
+                    <Progress value={60} showValue />
+                    <Progress value={85} size="lg" label="Upload progress" />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Spinner size="sm" />
+                    <Spinner />
+                    <Spinner size="lg" label="Loading preview" />
+                  </div>
+                  <MultiSelect
+                    className="max-w-xs"
+                    options={["Product Designer", "Engineer", "Researcher"]}
+                  />
+                  <Label>
+                    <Checkbox defaultChecked />
+                    Receive updates
+                  </Label>
+                  <Input className="max-w-xs" placeholder="Email address" />
+                  <div className="flex gap-3">
+                    <Label>
+                      <Radio
+                        name="themed-plan"
+                        value="monthly"
+                        defaultChecked
+                      />
+                      Monthly
+                    </Label>
+                    <Label>
+                      <Radio name="themed-plan" value="yearly" />
+                      Yearly
+                    </Label>
+                  </div>
+                  <Label>
+                    multislect
+                    <Select
+                      className="max-w-xs"
+                      defaultValue=""
+                      options={[
+                        "Select a role",
+                        "Product Designer",
+                        "Engineer",
+                        "Researcher",
+                      ]}
+                    />
+                    multiselect
+                  </Label>
+                  <Label>
+                    <Switch defaultChecked />
+                    Enable notifications
+                  </Label>
+                  <TextArea
+                    className="max-w-xs"
+                    placeholder="Write a message"
+                  />
+                  <Counter prefix="$" value={12500} suffix=" saved" />
+                  <GradientText className="text-2xl font-bold">
+                    DIL UI
+                  </GradientText>
+                  <Marquee className="border-y border-(--dil-color-border) py-2">
+                    New components are ready for review
+                  </Marquee>
+                  <TextHover
+                    className="text-xl font-semibold"
+                    text="Hover me"
+                    hoverText="Hello"
+                  />
+                  <Terminal
+                    className="w-full"
+                    lines={terminalLines}
+                    terminalTitle="terminal@dil-ui"
+                    placeholder="Type a command (try 'help')"
+                    onCommandSubmit={handleTerminalCommand}
+                  />
+                  <Typewriter
+                    className="text-xl font-semibold"
+                    text="Building DIL UI"
+                  />
+                  <Skeleton className="w-full max-w-xs">
+                    <div className="space-y-2">
+                      <div className="h-5 w-2/3" />
+                      <div className="h-4 w-full" />
+                      <div className="h-4 w-5/6" />
+                    </div>
+                  </Skeleton>
+                  <FileInput
+                    className="max-w-xs"
+                    icon={<span className="text-lg">↑</span>}
+                    label="Upload attachment"
+                    helperText="PNG, JPG, or PDF up to 10 MB"
+                  />
+                </div>
+
+                <section className="space-y-3 border-t border-(--dil-color-border) pt-6">
+                  <h2 className="text-(length:--dil-font-xl) font-semibold">
+                    Toast examples
+                  </h2>
+                  <ToastExample isThemeProviderEnabled={true} />
+                </section>
+              </section>
+            </ToastProviderWithThemeProvider>
+          </ThemeProvider>
+        </div>
+      </main>
+    </ToastProvider>
   );
 }
 

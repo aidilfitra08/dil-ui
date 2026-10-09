@@ -5,9 +5,8 @@ import type {
   TimeRangeValue,
 } from "./TimeRangePicker.types";
 import { cn } from "../../../lib/utils";
-
-const timeInputClasses =
-  "h-10 w-full rounded-(--dil-radius-md) border border-[var(--dil-color-border) bg-[var(--dil-color-surface) px-3 text-[var(--dil-font-md) text-[var(--dil-color-text)";
+import { Popover, PopoverContent, PopoverTrigger } from "../../overlay/Popover";
+import { TimePanel } from "../picker-panels";
 
 export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
   (
@@ -21,10 +20,10 @@ export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
     },
     ref,
   ) => {
+    const [open, setOpen] = useState(false);
     const [internalValue, setInternalValue] = useState<TimeRangeValue>(
       defaultValue ?? {},
     );
-    const [isOpen, setIsOpen] = useState(false);
     const selectedValue = value ?? internalValue;
     const updateValue = (nextValue: TimeRangeValue) => {
       if (value === undefined) setInternalValue(nextValue);
@@ -32,51 +31,47 @@ export const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
     };
 
     return (
-      <div ref={ref} className={cn("relative", "w-full", className)} {...props}>
-        <button
-          type="button"
-          className="flex h-10 w-full items-center rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 text-left text-[length:--dil-font-md text-[--dil-color-text"
-          aria-expanded={isOpen}
-          onClick={() => setIsOpen((open) => !open)}
+      <Popover open={open} onOpenChange={setOpen}>
+        <div
+          ref={ref}
+          className={cn("relative", "w-full", className)}
+          {...props}
         >
-          {selectedValue.start
-            ? `${selectedValue.start} - ${selectedValue.end ?? ""}`
-            : placeholder}
-        </button>
-        {isOpen ? (
-          <div className="absolute z-20 mt-2 w-72 space-y-3 border border-(--dil-color-border) bg-(--dil-color-surface) p-3 shadow-(--dil-shadow-md)">
-            <label className="block text-(--dil-font-sm)">
-              Start
-              <input
-                className={cn("mt-1", timeInputClasses)}
-                type="time"
-                value={selectedValue.start ?? ""}
-                onChange={(event) =>
-                  updateValue({ ...selectedValue, start: event.target.value })
-                }
-              />
-            </label>
-            <label className="block text-(--dil-font-sm)">
-              End
-              <input
-                className={cn("mt-1", timeInputClasses)}
-                type="time"
-                value={selectedValue.end ?? ""}
-                onChange={(event) =>
-                  updateValue({ ...selectedValue, end: event.target.value })
-                }
-              />
-            </label>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex h-10 w-full items-center rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 text-left text-(length:--dil-font-md) text-(--dil-color-text)"
+            >
+              {selectedValue.start
+                ? `${selectedValue.start} - ${selectedValue.end ?? ""}`
+                : placeholder}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-72 space-y-3 p-3"
+            side="bottom"
+            align="start"
+          >
+            <p className="text-sm font-medium">Start time</p>
+            <TimePanel
+              value={selectedValue.start}
+              onChange={(start) => updateValue({ ...selectedValue, start })}
+            />
+            <p className="text-sm font-medium">End time</p>
+            <TimePanel
+              value={selectedValue.end}
+              onChange={(end) => updateValue({ ...selectedValue, end })}
+            />
             <button
               type="button"
               className="w-full border border-(--dil-color-border) px-3 py-2"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setOpen(false)}
             >
               Done
             </button>
-          </div>
-        ) : null}
-      </div>
+          </PopoverContent>
+        </div>
+      </Popover>
     );
   },
 );

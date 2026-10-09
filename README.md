@@ -15,6 +15,18 @@ It is intended for early npm publishing and local experimentation before a stabl
 - Data display: `Avatar`, `Badge`, `Card`, `Table`, `DataTable`, `Timeline`
 - Data entry: `Combobox`, `DatePicker`, `DateRangePicker`, `DateTimePicker`, `MonthPicker`, `MultiSelect`, `TimePicker`, `TimeRangePicker`
 - UI: `PatternBackground`
+- Overlay: `Popover`, `PopoverTrigger`, `PopoverContent`, `PopoverAnchor`, `PopoverClose`
+
+## Popover
+
+`Popover` is the shared floating-layer primitive for interactive content such as calendars, command menus, selects, and autocomplete panels. It supports controlled and uncontrolled state, click-outside and Escape dismissal, portal rendering, nested composition, Floating UI collision handling, and animation-friendly `data-state`, `data-side`, and `data-align` attributes.
+
+```tsx
+<Popover>
+	<PopoverTrigger asChild><Button>Open</Button></PopoverTrigger>
+	<PopoverContent><PopoverClose>Done</PopoverClose></PopoverContent>
+</Popover>
+```
 
 ## Themes
 
