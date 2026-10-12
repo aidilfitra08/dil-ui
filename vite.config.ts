@@ -12,6 +12,7 @@ export default defineConfig({
     dts({
       tsconfigPath: "./tsconfig.app.json",
       insertTypesEntry: true,
+      exclude: ["src/examples/**"],
     }),
     tailwindcss(),
   ],

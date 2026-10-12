@@ -47,6 +47,7 @@ import {
   TableRow,
 } from "./components/data-display/Table";
 import { Timeline, TimelineItem } from "./components/data-display/Timeline";
+import { ListExamples } from "./examples/ListExamples";
 import { PatternBackground } from "./components/ui/PatternBackground";
 import { LoadingBar, NeoNavbar } from "./components/ui";
 import {
@@ -491,6 +492,8 @@ function App() {
                 </div>
               </div>
             </section>
+
+            <ListExamples />
 
             <section className="mb-6 space-y-3 border-b border-slate-200 pb-6">
               <h2 className="text-xl font-bold uppercase">
@@ -1291,6 +1294,7 @@ function App() {
                   disabled
                   aria-label="Disabled slider"
                 />
+                <ListExamples />
               </section>
             </ToastProviderWithThemeProvider>
           </ThemeProvider>
