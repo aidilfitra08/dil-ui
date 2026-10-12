@@ -1,7 +1,6 @@
 # dil-ui
 
-`dil-ui` is a React component library built with TypeScript and Vite.
-It is intended for early npm publishing and local experimentation before a stable release.
+`dil-ui` is a React component library built with TypeScript and Vite. Version `0.1.0` is an early, pre-1.0 release intended for npm publishing and continued refinement; component APIs may evolve before a stable `1.0.0` release.
 
 ## Status
 
@@ -12,10 +11,35 @@ It is intended for early npm publishing and local experimentation before a stabl
 ## Included components
 
 - Actions: `Button`, `IconButton`
-- Data display: `Avatar`, `Badge`, `Card`, `Table`, `DataTable`, `Timeline`
+- Data display: `Avatar`, `Badge`, `Card`, `List`, `ListItem`, `Table`, `DataTable`, `Timeline`
 - Data entry: `Combobox`, `DatePicker`, `DateRangePicker`, `DateTimePicker`, `MonthPicker`, `MultiSelect`, `TimePicker`, `TimeRangePicker`
 - UI: `PatternBackground`
 - Overlay: `Popover`, `PopoverTrigger`, `PopoverContent`, `PopoverAnchor`, `PopoverClose`
+
+## Lists
+
+`List` renders semantic unordered (`ul`) or ordered (`ol`) lists. `ListItem` renders a semantic `li` and works both inside and outside a `List`. Both support native HTML attributes, `className`, and forwarded refs.
+
+Choose a marker style with `marker`: `default`, `none`, `disc`, `circle`, `square`, `decimal`, `lower-alpha`, `upper-alpha`, `lower-roman`, `upper-roman`, or `custom`. The `spacing` prop accepts `none`, `sm`, `md`, or `lg`. Ordered lists also support native `start` and `reversed` attributes. For custom markers, provide `renderMarker`, which receives each item's zero-based index.
+
+```tsx
+import { List, ListItem } from "dil-ui";
+
+<List type="unordered" marker="disc" spacing="md">
+  <ListItem>First item</ListItem>
+  <ListItem>Second item</ListItem>
+</List>
+
+<List
+  type="ordered"
+  marker="custom"
+  spacing="sm"
+  renderMarker={(index) => <span aria-hidden="true">{index + 1}.</span>}
+>
+  <ListItem>First step</ListItem>
+  <ListItem>Second step</ListItem>
+</List>
+```
 
 ## Popover
 
@@ -37,7 +61,7 @@ Themes support light, dark, and system modes through `ThemeProvider` and expose 
 
 ## Alpha components
 
-`Table` and its supporting components, `Timeline`, all picker components, `MultiSelect`, `Marquee`, and `Typewriter` are currently alpha-stage. `MultiSelect`, `Marquee`, and `Typewriter` will receive further API and interaction refinement. Their APIs and visual behavior may change as the library matures.
+`List`, `ListItem`, `Table` and its supporting components, `Timeline`, all picker components, `MultiSelect`, `Marquee`, and `Typewriter` are currently alpha-stage. Their APIs and visual behavior may change as the library matures.
 
 ## Beta components
 
@@ -54,6 +78,21 @@ npm run dev
 
 ```bash
 npm run build
+```
+
+## Publishing
+
+The current package version is `0.1.0`. Before publishing a release, build and inspect the package contents:
+
+```bash
+npm run build
+npm pack --dry-run
+```
+
+The package includes the generated `dist` output. Publish the release to npm with:
+
+```bash
+npm publish
 ```
 
 ## Package preview
