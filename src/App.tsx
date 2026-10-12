@@ -33,6 +33,7 @@ import { FileInput } from "./components/forms/FileInput";
 import { Label } from "./components/forms/Label/Label";
 import { Radio } from "./components/forms/Radio";
 import { Select } from "./components/forms/Select";
+import { Slider } from "./components/forms/Slider";
 import { Switch } from "./components/forms/Switch";
 import { TextArea } from "./components/forms/TextArea/TextArea";
 import {
@@ -747,6 +748,16 @@ function App() {
               <Progress value={25} size="sm" />
               <Progress value={60} showValue />
               <Progress value={85} size="lg" label="Upload progress" />
+              <Slider defaultValue={[50]} aria-label="Volume" />
+              <Slider defaultValue={[25, 75]} aria-label="Price range" />
+              <Slider
+                defaultValue={[50]}
+                min={0}
+                max={100}
+                step={5}
+                disabled
+                aria-label="Disabled slider"
+              />
             </div>
             <Skeleton className="w-full max-w-xs">
               <div className="space-y-2">
@@ -1270,6 +1281,16 @@ function App() {
                   </h2>
                   <ToastExample isThemeProviderEnabled={true} />
                 </section>
+                <Slider defaultValue={[50]} aria-label="Volume" />
+                <Slider defaultValue={[25, 75]} aria-label="Price range" />
+                <Slider
+                  defaultValue={[50]}
+                  min={0}
+                  max={100}
+                  step={5}
+                  disabled
+                  aria-label="Disabled slider"
+                />
               </section>
             </ToastProviderWithThemeProvider>
           </ThemeProvider>

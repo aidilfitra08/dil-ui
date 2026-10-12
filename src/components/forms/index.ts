@@ -5,4 +5,5 @@ export * from "./Label";
 export * from "./Radio";
 export * from "./Select";
 export * from "./Switch";
+export * from "./Slider";
 export * from "./TextArea";
