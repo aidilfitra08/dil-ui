@@ -1249,6 +1249,22 @@ function App() {
                     DIL UI
                   </GradientText>
                   <Marquee className="border-y border-(--dil-color-border) py-2">
+                    <div>text 1</div>
+                    <div>text 2</div>
+                    <div>text 3</div>
+                    <div>text 4</div>
+                    <div>text 5</div>
+                    <div>text 6</div>
+                    <div>text 7</div>
+                    <div>text 8</div>
+                    <div>text 9</div>
+                    <div>text 10</div>
+                    <div>text 11</div>
+                    <div>text 12</div>
+                    <div>text 13</div>
+                    <div>text 14</div>
+                    <div>text 15</div>
+                    <div>text 16</div>
                     New components are ready for review
                   </Marquee>
                   <TextHover

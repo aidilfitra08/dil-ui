@@ -1,3 +1,4 @@
+import { Marquee } from "../components";
 import { Button } from "../components/actions/Button";
 import { Card } from "../components/data-display/Card";
 import { LoadingBar } from "../components/ui/LoadingBar";
@@ -108,6 +109,60 @@ export default function NavigationExamplePage() {
                   collapses its links into a right-side menu drawer.
                 </p>
               </Card>
+              <section className="space-y-4">
+                <h2 className="text-xl font-black uppercase">Marquee</h2>
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_14rem]">
+                  <Card className="space-y-3">
+                    <h3 className="text-sm font-bold uppercase">Horizontal</h3>
+                    <Marquee className="border-y-2 border-(--dil-color-border) py-3">
+                      <span className="bg-(--dil-color-primary) px-3 py-1 font-bold uppercase">
+                        Design
+                      </span>
+                      <span className="border-2 border-(--dil-color-border) px-3 py-1 font-bold uppercase">
+                        Build
+                      </span>
+                      <span className="bg-(--dil-color-secondary) px-3 py-1 font-bold uppercase">
+                        Ship
+                      </span>
+                      <span className="bg-(--dil-color-secondary) px-3 py-1 font-bold uppercase">
+                        Ship
+                      </span>
+                      <span className="bg-(--dil-color-secondary) px-3 py-1 font-bold uppercase">
+                        Ship
+                      </span>
+                      <span className="bg-(--dil-color-secondary) px-3 py-1 font-bold uppercase">
+                        Ship
+                      </span>
+                      <span className="bg-(--dil-color-secondary) px-3 py-1 font-bold uppercase">
+                        Ship
+                      </span>
+                      <span className="border-2 border-(--dil-color-border) px-3 py-1 font-bold uppercase">
+                        Build
+                      </span>
+                      <span aria-hidden="true" className="text-xl">
+                        ✦
+                      </span>
+                    </Marquee>
+                  </Card>
+                  <Card className="space-y-3">
+                    <h3 className="text-sm font-bold uppercase">Vertical</h3>
+                    <Marquee
+                      orientation="vertical"
+                      className="h-48 border-y-2 border-(--dil-color-border) py-3"
+                    >
+                      <span className="bg-(--dil-color-primary) px-3 py-1 font-bold uppercase">
+                        In progress
+                      </span>
+                      <span className="border-2 border-(--dil-color-border) px-3 py-1 font-bold uppercase">
+                        In review
+                      </span>
+                      <span className="bg-(--dil-color-secondary) px-3 py-1 font-bold uppercase">
+                        Complete
+                      </span>
+                    </Marquee>
+                  </Card>
+                </div>
+              </section>
             </div>
           </main>
         </div>

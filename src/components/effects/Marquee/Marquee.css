@@ -1,6 +1,12 @@
-@keyframes dil-marquee-scroll {
+@keyframes dil-marquee-scroll-horizontal {
 	to {
 		transform: translateX(-50%);
+	}
+}
+
+@keyframes dil-marquee-scroll-vertical {
+	to {
+		transform: translateY(-50%);
 	}
 }
 
@@ -10,14 +16,46 @@
 }
 
 .dil-marquee__track {
-	animation: dil-marquee-scroll var(--dil-marquee-duration) linear infinite;
+	animation: dil-marquee-scroll-horizontal var(--dil-marquee-duration) linear infinite;
 	display: flex;
 	width: max-content;
 }
 
-.dil-marquee__content {
+.dil-marquee__sequence {
+	align-items: center;
+	box-sizing: border-box;
+	display: flex;
 	flex: none;
-	padding-right: var(--dil-spacing-lg, 24px);
+	gap: var(--dil-marquee-gap, 24px);
+}
+
+.dil-marquee__sequence > * {
+	flex: none;
+}
+
+.dil-marquee--horizontal .dil-marquee__sequence {
+	flex-direction: row;
+	min-width: var(--dil-marquee-loop-size, 100%);
+	padding-right: var(--dil-marquee-gap, 24px);
+}
+
+.dil-marquee--vertical {
+	width: 100%;
+}
+
+.dil-marquee--vertical .dil-marquee__track {
+	animation-name: dil-marquee-scroll-vertical;
+	flex-direction: column;
+	height: max-content;
+	width: 100%;
+}
+
+.dil-marquee--vertical .dil-marquee__sequence {
+	align-items: stretch;
+	flex-direction: column;
+	min-height: var(--dil-marquee-loop-size, 100%);
+	padding-bottom: var(--dil-marquee-gap, 24px);
+	width: 100%;
 }
 
 .dil-marquee--pause-on-hover:hover .dil-marquee__track {
