@@ -434,7 +434,9 @@ function App() {
 
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="secondary">Combobox composition</Button>
+                    <Button variant="secondary" className="text-left w-96">
+                      Combobox composition
+                    </Button>
                   </PopoverTrigger>
                   <PopoverContent side="bottom" align="start">
                     <Combobox
@@ -1198,6 +1200,8 @@ function App() {
                   <MultiSelect
                     className="max-w-xs"
                     options={["Product Designer", "Engineer", "Researcher"]}
+                    searchable
+                    placeholder="Select roles"
                   />
                   <Label>
                     <Checkbox defaultChecked />
@@ -1295,6 +1299,12 @@ function App() {
                   aria-label="Disabled slider"
                 />
                 <ListExamples />
+                <a
+                  href="/example-page-with-navigation"
+                  className="text-(--dil-color-primary)"
+                >
+                  Example page with navigation
+                </a>
               </section>
             </ToastProviderWithThemeProvider>
           </ThemeProvider>

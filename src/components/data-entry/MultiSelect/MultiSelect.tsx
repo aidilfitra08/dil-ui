@@ -2,30 +2,43 @@ import { forwardRef, useMemo, useState } from "react";
 
 import type { MultiSelectProps } from "./MultiSelect.types";
 import { cn } from "../../../lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "../../overlay/Popover";
+import { Popover, PopoverAnchor, PopoverContent } from "../../overlay/Popover";
+import { MultiSelectItem } from "./MultiSelectItem";
 
 export const MultiSelect = forwardRef<HTMLSelectElement, MultiSelectProps>(
   (
     {
       className,
       options = [],
+      searchable = false,
       children,
       value,
       defaultValue,
       onChange,
+      placeholder = "Select options",
       ...props
     },
     ref,
   ) => {
-    const optionList = options.length ? options : ["Option 1", "Option 2"];
+    const optionList = useMemo(
+      () => (options.length ? options : ["Option 1", "Option 2"]),
+      [options],
+    );
     const initialValue = Array.isArray(defaultValue)
       ? defaultValue.map(String)
       : [];
     const [internalValue, setInternalValue] = useState<string[]>(initialValue);
     const selected = Array.isArray(value) ? value.map(String) : internalValue;
-    const label = useMemo(
-      () => (selected.length ? selected : ["Select options"]),
-      [selected],
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const filteredOptions = useMemo(
+      () =>
+        searchable
+          ? optionList.filter((option) =>
+              option.toLowerCase().includes(query.toLowerCase()),
+            )
+          : optionList,
+      [optionList, query, searchable],
     );
 
     const toggleOption = (option: string) => {
@@ -39,7 +52,7 @@ export const MultiSelect = forwardRef<HTMLSelectElement, MultiSelectProps>(
     };
 
     return (
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <select
           ref={ref}
           multiple
@@ -56,51 +69,100 @@ export const MultiSelect = forwardRef<HTMLSelectElement, MultiSelectProps>(
             </option>
           ))}
         </select>
-        <PopoverTrigger asChild>
-          <button
-            type="button"
+        <PopoverAnchor asChild>
+          <div
+            role="group"
+            aria-label="Selected options"
+            tabIndex={searchable ? undefined : 0}
             className={cn(
-              "min-h-10 w-full rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 text-left text-(--dil-color-text) outline-none focus:border-(--dil-color-primary)",
+              "flex min-h-10 w-full flex-wrap items-center gap-1 rounded-(--dil-radius-md) border border-(--dil-color-border) bg-(--dil-color-surface) px-3 py-2 text-left text-(--dil-color-text) outline-none focus-within:border-(--dil-color-primary)",
               className,
             )}
+            onClick={() => setOpen(true)}
+            onKeyDown={(event) => {
+              if (
+                event.target === event.currentTarget &&
+                (event.key === "Enter" || event.key === " ")
+              ) {
+                event.preventDefault();
+                setOpen(true);
+              }
+            }}
           >
-            <span className="flex flex-wrap gap-1">
-              {label.map((item) => (
-                <span
+            {selected.length ? (
+              selected.map((item) => (
+                <button
                   key={item}
-                  className={cn(
-                    "rounded-full px-2 py-0.5 text-sm",
-                    item === "Select options"
-                      ? "text-(--dil-color-muted)"
-                      : "bg-(--dil-color-secondary)",
-                  )}
+                  type="button"
+                  aria-label={`Remove ${item}`}
+                  className="inline-flex items-center gap-1 rounded-full bg-(--dil-color-secondary) px-2 py-0.5 text-sm hover:bg-(--dil-color-primary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary)"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    toggleOption(item);
+                  }}
                 >
                   {item}
-                </span>
-              ))}
-            </span>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="p-2" side="bottom" align="start">
-          <div role="listbox" aria-multiselectable="true" className="space-y-1">
-            {optionList.map((option) => {
-              const isSelected = selected.includes(option);
-              return (
-                <button
-                  key={option}
-                  type="button"
-                  role="option"
-                  aria-selected={isSelected}
-                  className={cn(
-                    "w-full cursor-pointer rounded px-3 py-2 text-left transition-colors hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary)",
-                    isSelected && "bg-(--dil-color-primary) font-medium",
-                  )}
-                  onClick={() => toggleOption(option)}
-                >
-                  {option}
+                  <span aria-hidden="true">×</span>
                 </button>
-              );
-            })}
+              ))
+            ) : !searchable ? (
+              <span className="text-sm text-(--dil-color-muted)">
+                {placeholder}
+              </span>
+            ) : null}
+            {searchable && (
+              <input
+                type="search"
+                aria-label="Search options"
+                placeholder={selected.length ? "Search..." : placeholder}
+                value={query}
+                onFocus={() => setOpen(true)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setOpen(true);
+                }}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setOpen(true);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Backspace" && !query && selected.length) {
+                    toggleOption(selected[selected.length - 1]);
+                  }
+                  if (event.key === "Escape") setOpen(false);
+                }}
+                onMouseDown={(event) => event.stopPropagation()}
+                className="h-8 min-w-24 flex-1 border-0 bg-transparent px-1 text-sm text-(--dil-color-text) outline-none placeholder:text-(--dil-color-muted)"
+              />
+            )}
+            {!searchable && selected.length === 0 && (
+              <span className="sr-only">{placeholder}</span>
+            )}
+          </div>
+        </PopoverAnchor>
+        <PopoverContent className="p-2" side="bottom" align="start">
+          <div
+            role="listbox"
+            aria-label="Options"
+            aria-multiselectable="true"
+            className="max-h-56 space-y-1 overflow-auto [&>button:first-child]:rounded-t-(--dil-radius-lg) [&>button:last-child]:rounded-b-(--dil-radius-lg)"
+          >
+            {filteredOptions.length ? (
+              filteredOptions.map((option) => {
+                const isSelected = selected.includes(option);
+                return (
+                  <MultiSelectItem
+                    key={option}
+                    selected={isSelected}
+                    onClick={() => toggleOption(option)}
+                  >
+                    {option}
+                  </MultiSelectItem>
+                );
+              })
+            ) : (
+              <div className="px-3 py-2 text-sm opacity-70">No results</div>
+            )}
             {children}
           </div>
         </PopoverContent>

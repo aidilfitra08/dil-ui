@@ -117,7 +117,7 @@ export function Popover({
       size({
         apply({ rects, elements }) {
           Object.assign(elements.floating.style, {
-            width: `${rects.reference.width}px`,
+            minWidth: `${rects.reference.width}px`,
           });
         },
       }),

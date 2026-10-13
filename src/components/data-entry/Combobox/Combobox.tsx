@@ -2,7 +2,8 @@ import { forwardRef, useMemo, useState } from "react";
 
 import type { ComboboxProps } from "./Combobox.types";
 import { cn } from "../../../lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "../../overlay/Popover";
+import { Popover, PopoverAnchor, PopoverContent } from "../../overlay/Popover";
+import { ComboboxItem } from "./ComboboxItem";
 
 export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
   (
@@ -36,7 +37,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
 
     return (
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverAnchor asChild>
           <input
             ref={ref}
             className={classes}
@@ -44,6 +45,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
             aria-expanded={open}
             autoComplete="off"
             onFocus={() => setOpen(true)}
+            onClick={() => setOpen(true)}
             onChange={(event) => {
               setQuery(event.target.value);
               onChange?.(event);
@@ -51,15 +53,17 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
             }}
             {...props}
           />
-        </PopoverTrigger>
+        </PopoverAnchor>
         <PopoverContent className="p-1" side="bottom" align="start">
-          <ul role="listbox" className="max-h-56 overflow-auto">
+          <ul
+            role="listbox"
+            className="max-h-56 overflow-auto [&>li:first-child>button]:rounded-t-(--dil-radius-lg) [&>li:last-child>button]:rounded-b-(--dil-radius-lg)"
+          >
             {filteredOptions.length ? (
               filteredOptions.map((option) => (
-                <li key={option}>
-                  <button
-                    type="button"
-                    className="w-full rounded px-3 py-2 text-left hover:bg-(--dil-color-secondary) cursor-pointer"
+                <li key={option} className="" role="option">
+                  <ComboboxItem
+                    className="hover:translate-y-0 active:translate-y-0"
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={() => {
                       setQuery(option);
@@ -67,7 +71,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                     }}
                   >
                     {option}
-                  </button>
+                  </ComboboxItem>
                 </li>
               ))
             ) : (

@@ -5,4 +5,6 @@ export interface MultiSelectProps extends Omit<
   "multiple"
 > {
   options?: readonly string[];
+  searchable?: boolean;
+  placeholder?: string;
 }
