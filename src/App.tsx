@@ -55,6 +55,12 @@ import {
   TimelineItem as UITimelineItem,
 } from "./components/ui/Timeline";
 import { ThemeProvider } from "./theme";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./components/navigation/Accordion";
 import type { DataTableSort } from "./components/data-display/Table";
 import type { TerminalLine } from "./components/effects/Terminal";
 import type { ThemeName } from "./theme";
@@ -384,6 +390,28 @@ function App() {
               </p>
               <h1 className="mt-1 text-2xl font-semibold">Raw components</h1>
             </div>
+
+            <section className="mb-6 space-y-3 border-b border-slate-200 pb-6">
+              <h2 className="text-xl font-semibold">Accordion examples</h2>
+              <Accordion type="multiple" defaultValue={["billing"]}>
+                <AccordionItem value="profile">
+                  <AccordionTrigger>Profile preferences</AccordionTrigger>
+                  <AccordionContent>
+                    Update your display name and the email address used for account notices.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="billing">
+                  <AccordionTrigger>Billing history</AccordionTrigger>
+                  <AccordionContent>
+                    Your invoices are available at the end of each billing cycle. You can download a PDF from the billing portal.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="security" disabled>
+                  <AccordionTrigger>Advanced security (unavailable)</AccordionTrigger>
+                  <AccordionContent>This section is currently unavailable.</AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </section>
 
             <section className="mb-6 space-y-3 border-b border-slate-200 pb-6">
               <h2 className="text-xl font-semibold">Toast examples</h2>
@@ -821,6 +849,43 @@ function App() {
                     </Button>
                   </div>
                 </div>
+
+                <section className="mb-6 space-y-4 border-b border-(--dil-color-border) pb-6">
+                  <div>
+                    <p className="text-(length:--dil-font-sm) font-semibold uppercase tracking-wide text-(--dil-color-text)">
+                      Accordion
+                    </p>
+                    <h2 className="mt-1 text-(length:--dil-font-2xl) font-semibold text-(--dil-color-text)">
+                      Frequently asked questions
+                    </h2>
+                  </div>
+                  <Accordion type="single" collapsible defaultValue="customize">
+                    <AccordionItem value="what-is-dil-ui">
+                      <AccordionTrigger>
+                        What is dil-ui?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        A reusable React component library with composable components and theme tokens.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="customize">
+                      <AccordionTrigger>
+                        Can I customize the components?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        Yes. Use custom trigger content and class names, or provide a theme through ThemeProvider.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="accessible">
+                      <AccordionTrigger>
+                        Does the accordion support keyboard navigation?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        Use Tab to focus a trigger, Enter or Space to toggle it, and the arrow keys to move between triggers.
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </section>
 
                 <section className="mb-6 space-y-4 border-b border-(--dil-color-border) pb-6">
                   <div>

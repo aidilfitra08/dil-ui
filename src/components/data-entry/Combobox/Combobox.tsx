@@ -57,7 +57,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
         <PopoverContent className="p-1" side="bottom" align="start">
           <ul
             role="listbox"
-            className="max-h-56 overflow-auto [&>li:first-child>button]:rounded-t-(--dil-radius-lg) [&>li:last-child>button]:rounded-b-(--dil-radius-lg)"
+            className="max-h-56 overflow-auto [&>li:first-child>button]:rounded-t-[calc(var(--dil-radius-md)-4px)] [&>li:last-child>button]:rounded-b-[calc(var(--dil-radius-md)-4px)]"
           >
             {filteredOptions.length ? (
               filteredOptions.map((option) => (

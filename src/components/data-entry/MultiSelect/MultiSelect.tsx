@@ -140,12 +140,12 @@ export const MultiSelect = forwardRef<HTMLSelectElement, MultiSelectProps>(
             )}
           </div>
         </PopoverAnchor>
-        <PopoverContent className="p-2" side="bottom" align="start">
+        <PopoverContent className="p-1" side="bottom" align="start">
           <div
             role="listbox"
             aria-label="Options"
             aria-multiselectable="true"
-            className="max-h-56 space-y-1 overflow-auto [&>button:first-child]:rounded-t-(--dil-radius-lg) [&>button:last-child]:rounded-b-(--dil-radius-lg)"
+            className="max-h-56 space-y-1 overflow-auto [&>button:first-child]:rounded-t-[calc(var(--dil-radius-md)-4px)] [&>button:last-child]:rounded-b-[calc(var(--dil-radius-md)-4px)]"
           >
             {filteredOptions.length ? (
               filteredOptions.map((option) => {

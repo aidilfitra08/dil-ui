@@ -14,6 +14,7 @@ A React component library built with TypeScript. Components are exported from th
   - [Feedback](#feedback)
   - [Forms](#forms)
   - [Overlays](#overlays)
+  - [Navigation](#navigation)
   - [UI](#ui)
 - [Themes](#themes)
 - [Development](#development)
@@ -100,6 +101,10 @@ Component names below reflect the library's exported components; compound compon
 - **Dialog** — Modal dialog content.
 - **Popover** — Anchored floating content, with trigger, content, anchor, and close components.
 - **Tooltip** — Contextual hint attached to an element.
+
+### Navigation
+
+- **Accordion, AccordionItem, AccordionTrigger, AccordionContent** — Accessible single- or multiple-item disclosures. See [Accordion usage](./docs/accordion.md).
 
 ### UI
 

@@ -16,7 +16,6 @@ export function NeoNavbar({
   className,
 }: NeoNavbarProps) {
   const themeContext = useContext(ThemeContext);
-  console.log("themeContext", themeContext);
   const isRetroTerminal = themeContext?.theme.name === "retroterminal";
   const menuId = useId();
   const [uncontrolledMenuOpen, setUncontrolledMenuOpen] = useState(false);
@@ -53,7 +52,6 @@ export function NeoNavbar({
         "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-ink) shadow-(--dil-shadow-sm)",
       !item.active && "text-(--dil-color-muted) hover:text-(--dil-color-text)",
     );
-    console.log("isRetroTerminal", isRetroTerminal);
     if (isRetroTerminal) {
       return item.href ? (
         <Button
