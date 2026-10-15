@@ -5,6 +5,40 @@ import { IconButton } from "./components/actions/IconButton";
 import { Avatar } from "./components/data-display/Avatar";
 import { Badge } from "./components/data-display/Badge";
 import { Card } from "./components/data-display/Card";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  Cell,
+  ChartContainer,
+  ChartGrid,
+  ChartLegend,
+  ChartTooltip,
+  ChartXAxis,
+  ChartYAxis,
+  ComposedChart,
+  Funnel,
+  FunnelChart,
+  LabelList,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  RadialBar,
+  RadialBarChart,
+  Sankey,
+  Scatter,
+  ScatterChart,
+  SunburstChart,
+  Treemap,
+  ZAxis,
+} from "./components/data-display/Chart";
 import { Combobox } from "./components/data-entry/Combobox";
 import { DatePicker } from "./components/data-entry/DatePicker";
 import { DateRangePicker } from "./components/data-entry/DateRangePicker";
@@ -111,6 +145,87 @@ const tableResponse = {
 const emptyTableResponse = {
   header: ["name", "status"],
   data: [],
+};
+
+const chartData = [
+  { month: "Jan", revenue: 186, expenses: 112 },
+  { month: "Feb", revenue: 245, expenses: 154 },
+  { month: "Mar", revenue: 213, expenses: 137 },
+  { month: "Apr", revenue: 302, expenses: 184 },
+  { month: "May", revenue: 278, expenses: 161 },
+  { month: "Jun", revenue: 354, expenses: 206 },
+];
+
+const chartConfig = {
+  revenue: { label: "Revenue", color: "var(--dil-chart-primary)" },
+  expenses: { label: "Expenses", color: "var(--dil-chart-secondary)" },
+};
+
+const chartPalette = [
+  "var(--dil-color-primary, #2563eb)",
+  "var(--dil-color-secondary, #14b8a6)",
+  "var(--dil-color-success, #22c55e)",
+  "var(--dil-color-warning, #f59e0b)",
+  "var(--dil-color-info, #06b6d4)",
+];
+
+const categoricalChartData = [
+  { name: "Jan", sales: 186, target: 150, visitors: 240, conversion: 64, size: 120 },
+  { name: "Feb", sales: 245, target: 210, visitors: 320, conversion: 78, size: 160 },
+  { name: "Mar", sales: 213, target: 190, visitors: 290, conversion: 70, size: 140 },
+  { name: "Apr", sales: 302, target: 270, visitors: 390, conversion: 86, size: 190 },
+  { name: "May", sales: 278, target: 250, visitors: 355, conversion: 82, size: 175 },
+];
+
+const pieChartData = [
+  { name: "Direct", value: 42 },
+  { name: "Referral", value: 28 },
+  { name: "Organic", value: 18 },
+  { name: "Social", value: 12 },
+];
+
+const radarChartData = [
+  { subject: "Speed", product: 82, service: 68 },
+  { subject: "Quality", product: 90, service: 78 },
+  { subject: "Support", product: 70, service: 92 },
+  { subject: "Value", product: 84, service: 75 },
+  { subject: "Reliability", product: 94, service: 86 },
+];
+
+const radialChartData = [
+  { name: "Complete", value: 78, fill: "var(--dil-color-primary, #2563eb)" },
+  { name: "Remaining", value: 22, fill: "var(--dil-color-muted, #94a3b8)" },
+];
+
+const treemapData = [
+  { name: "Design", size: 340 },
+  { name: "Engineering", size: 520 },
+  { name: "Research", size: 220 },
+  { name: "Support", size: 180 },
+];
+
+const sankeyData = {
+  nodes: [
+    { name: "Visitors" },
+    { name: "Sign ups" },
+    { name: "Returning" },
+    { name: "Customers" },
+  ],
+  links: [
+    { source: 0, target: 1, value: 42 },
+    { source: 0, target: 2, value: 58 },
+    { source: 1, target: 3, value: 24 },
+    { source: 2, target: 3, value: 36 },
+  ],
+};
+
+const sunburstData = {
+  name: "Product",
+  value: 82,
+  children: [
+    { name: "Core", value: 52, children: [{ name: "Search", value: 30 }, { name: "Workspace", value: 22 }] },
+    { name: "Services", value: 30, children: [{ name: "Analytics", value: 18 }, { name: "Support", value: 12 }] },
+  ],
 };
 
 const emptyTableContent = (
@@ -521,6 +636,22 @@ function App() {
                   </Collapsible>
                 </div>
               </div>
+            </section>
+
+            <section className="mb-6 space-y-3 border-b border-slate-200 pb-6">
+              <h2 className="text-xl font-semibold">Chart examples</h2>
+              <p className="text-sm text-slate-600">Revenue and expenses over six months.</p>
+              <ChartContainer config={chartConfig} aria-label="Monthly revenue and expenses">
+                <BarChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+                  <ChartGrid />
+                  <ChartXAxis dataKey="month" />
+                  <ChartYAxis />
+                  <ChartTooltip />
+                  <ChartLegend />
+                  <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="expenses" fill="var(--color-expenses)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ChartContainer>
             </section>
 
             <ListExamples />
@@ -1362,6 +1493,156 @@ function App() {
                     helperText="PNG, JPG, or PDF up to 10 MB"
                   />
                 </div>
+
+                <section className="mb-6 space-y-3 border-b border-(--dil-color-border) pb-6">
+                  <h2 className="text-(length:--dil-font-xl) font-semibold">
+                    Chart examples
+                  </h2>
+                  <p className="text-sm opacity-75">
+                    Revenue and expenses by month, styled using the active theme tokens.
+                  </p>
+                  <ChartContainer config={chartConfig} aria-label="Monthly revenue and expenses">
+                    <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+                      <ChartGrid />
+                      <ChartXAxis dataKey="month" />
+                      <ChartYAxis />
+                      <ChartTooltip />
+                      <ChartLegend />
+                      <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2.5} dot={{ r: 3 }} />
+                      <Line type="monotone" dataKey="expenses" stroke="var(--color-expenses)" strokeWidth={2.5} dot={{ r: 3 }} />
+                    </LineChart>
+                  </ChartContainer>
+                </section>
+
+                <section className="mb-6 space-y-4 border-b border-(--dil-color-border) pb-6">
+                  <div>
+                    <h2 className="text-(length:--dil-font-xl) font-semibold">
+                      Chart type gallery
+                    </h2>
+                    <p className="mt-1 text-sm opacity-75">
+                      Every Recharts chart family supported by dil-ui, using the active theme palette.
+                    </p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <Card className="min-w-0" aria-label="Area chart example">
+                      <h3 className="mb-2 font-semibold">Area chart</h3>
+                      <ChartContainer config={chartConfig} aria-label="Area chart comparing sales and targets" className="h-64">
+                        <AreaChart data={categoricalChartData}>
+                          <ChartGrid />
+                          <ChartXAxis dataKey="name" />
+                          <ChartYAxis />
+                          <ChartTooltip />
+                          <Area dataKey="sales" type="monotone" fill="var(--color-revenue)" fillOpacity={0.35} stroke="var(--color-revenue)" />
+                          <Area dataKey="target" type="monotone" fill="var(--color-expenses)" fillOpacity={0.2} stroke="var(--color-expenses)" />
+                        </AreaChart>
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Composed chart example">
+                      <h3 className="mb-2 font-semibold">Composed chart</h3>
+                      <ChartContainer config={chartConfig} aria-label="Composed sales and target chart" className="h-64">
+                        <ComposedChart data={categoricalChartData}>
+                          <ChartGrid />
+                          <ChartXAxis dataKey="name" />
+                          <ChartYAxis />
+                          <ChartTooltip />
+                          <Bar dataKey="sales" fill="var(--color-revenue)" radius={[3, 3, 0, 0]} />
+                          <Line dataKey="target" type="monotone" stroke="var(--color-expenses)" strokeWidth={2} />
+                        </ComposedChart>
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Pie chart example">
+                      <h3 className="mb-2 font-semibold">Pie chart</h3>
+                      <ChartContainer config={chartConfig} aria-label="Traffic sources pie chart" className="h-64">
+                        <PieChart>
+                          <ChartTooltip />
+                          <Pie data={pieChartData} dataKey="value" nameKey="name" outerRadius="75%" label>
+                            {pieChartData.map((entry, index) => (
+                              <Cell key={entry.name} fill={chartPalette[index % chartPalette.length]} />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Radar chart example">
+                      <h3 className="mb-2 font-semibold">Radar chart</h3>
+                      <ChartContainer config={chartConfig} aria-label="Product and service ratings radar chart" className="h-64">
+                        <RadarChart data={radarChartData}>
+                          <PolarGrid />
+                          <PolarAngleAxis dataKey="subject" />
+                          <PolarRadiusAxis />
+                          <ChartTooltip />
+                          <Radar dataKey="product" stroke="var(--color-revenue)" fill="var(--color-revenue)" fillOpacity={0.35} />
+                          <Radar dataKey="service" stroke="var(--color-expenses)" fill="var(--color-expenses)" fillOpacity={0.2} />
+                        </RadarChart>
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Radial bar chart example">
+                      <h3 className="mb-2 font-semibold">Radial bar chart</h3>
+                      <ChartContainer config={chartConfig} aria-label="Completion radial bar chart" className="h-64">
+                        <RadialBarChart data={radialChartData} innerRadius="35%" outerRadius="85%" startAngle={90} endAngle={-270}>
+                          <ChartTooltip />
+                          <RadialBar dataKey="value" background cornerRadius={8} />
+                        </RadialBarChart>
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Scatter chart example">
+                      <h3 className="mb-2 font-semibold">Scatter chart</h3>
+                      <ChartContainer config={chartConfig} aria-label="Visitors and conversion scatter chart" className="h-64">
+                        <ScatterChart>
+                          <ChartGrid />
+                          <ChartXAxis type="number" dataKey="visitors" name="Visitors" />
+                          <ChartYAxis type="number" dataKey="conversion" name="Conversion" />
+                          <ZAxis type="number" dataKey="size" range={[50, 400]} />
+                          <ChartTooltip />
+                          <Scatter data={categoricalChartData} fill="var(--color-revenue)" />
+                        </ScatterChart>
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Funnel chart example">
+                      <h3 className="mb-2 font-semibold">Funnel chart</h3>
+                      <ChartContainer config={chartConfig} aria-label="Customer funnel chart" className="h-64">
+                        <FunnelChart>
+                          <ChartTooltip />
+                          <Funnel data={[
+                            { name: "Visitors", value: 920 },
+                            { name: "Sign ups", value: 640 },
+                            { name: "Trials", value: 380 },
+                            { name: "Customers", value: 210 },
+                          ]} dataKey="value" nameKey="name" isAnimationActive>
+                            <LabelList position="right" fill="var(--dil-chart-text)" stroke="none" dataKey="name" />
+                          </Funnel>
+                        </FunnelChart>
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Treemap chart example">
+                      <h3 className="mb-2 font-semibold">Treemap</h3>
+                      <ChartContainer config={chartConfig} aria-label="Team allocation treemap" className="h-64">
+                        <Treemap data={treemapData.map((entry, index) => ({ ...entry, fill: chartPalette[index % chartPalette.length] }))} dataKey="size" nameKey="name" />
+                      </ChartContainer>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Sankey chart example">
+                      <h3 className="mb-2 font-semibold">Sankey chart</h3>
+                      <div role="img" aria-label="User journey Sankey chart" className="flex h-64 items-center justify-center overflow-hidden">
+                        <Sankey data={sankeyData} width={320} height={240} node={{ fill: "var(--dil-color-primary, #2563eb)" }} link={{ stroke: "var(--dil-color-secondary, #14b8a6)" }} />
+                      </div>
+                    </Card>
+
+                    <Card className="min-w-0" aria-label="Sunburst chart example">
+                      <h3 className="mb-2 font-semibold">Sunburst chart</h3>
+                      <div role="img" aria-label="Product features sunburst chart" className="flex h-64 items-center justify-center overflow-hidden">
+                        <SunburstChart data={sunburstData} width={320} height={240} dataKey="value" nameKey="name" />
+                      </div>
+                    </Card>
+                  </div>
+                </section>
 
                 <section className="space-y-3 border-t border-(--dil-color-border) pt-6">
                   <h2 className="text-(length:--dil-font-xl) font-semibold">

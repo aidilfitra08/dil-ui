@@ -61,6 +61,7 @@ Component names below reflect the library's exported components; compound compon
 - **Avatar** — Represents a person or entity.
 - **Badge** — Displays a compact status or label.
 - **Card** — Groups related content in a surface.
+- **ChartContainer, ChartTooltip, ChartLegend** — Theme-aware responsive chart composition built on Recharts. See [chart usage](./docs/charts.md).
 - **List, ListItem** — Semantic ordered or unordered lists and their items.
 - **Table, DataTable** — Tabular data and data-table presentation.
 
