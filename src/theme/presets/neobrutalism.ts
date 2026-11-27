@@ -25,6 +25,15 @@ export const neoBrutalismTheme: Theme = {
       overlay: "rgba(255, 253, 248, 0.9)",
     },
 
+    foregrounds: {
+      primary: "#000000",
+      secondary: "#000000",
+      success: "#000000",
+      warning: "#000000",
+      danger: "#000000",
+      info: "#000000",
+      muted: "#FFFFFF",
+    },
     spacing: {
       xs: "6px",
       sm: "12px",
@@ -99,6 +108,15 @@ export const neoBrutalismTheme: Theme = {
       overlay: "rgba(18, 18, 18, 0.9)",
     },
 
+    foregrounds: {
+      primary: "#000000",
+      secondary: "#000000",
+      success: "#000000",
+      warning: "#000000",
+      danger: "#000000",
+      info: "#000000",
+      muted: "#000000",
+    },
     spacing: {
       xs: "6px",
       sm: "12px",

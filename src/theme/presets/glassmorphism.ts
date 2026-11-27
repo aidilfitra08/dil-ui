@@ -20,6 +20,15 @@ export const glassmorphismTheme: Theme = {
       terminal: "#0F766E",
       overlay: "rgba(221, 235, 250, 0.72)",
     },
+    foregrounds: {
+      primary: "#FFFFFF",
+      secondary: "#000000",
+      success: "#FFFFFF",
+      warning: "#FFFFFF",
+      danger: "#FFFFFF",
+      info: "#FFFFFF",
+      muted: "#FFFFFF",
+    },
     spacing: {
       xs: "4px",
       sm: "8px",
@@ -85,6 +94,15 @@ export const glassmorphismTheme: Theme = {
       ink: "#08131F",
       terminal: "#5EEAD4",
       overlay: "rgba(16, 34, 53, 0.76)",
+    },
+    foregrounds: {
+      primary: "#000000",
+      secondary: "#000000",
+      success: "#000000",
+      warning: "#000000",
+      danger: "#000000",
+      info: "#000000",
+      muted: "#000000",
     },
     spacing: {
       xs: "4px",

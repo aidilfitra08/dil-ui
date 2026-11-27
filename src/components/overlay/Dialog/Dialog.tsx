@@ -14,15 +14,16 @@ import {
 } from "react";
 import {
   FloatingFocusManager,
-  FloatingPortal,
   useClick,
   useDismiss,
   useFloating,
   useInteractions,
+  useMergeRefs,
   useRole,
 } from "@floating-ui/react";
 
 import { cn } from "../../../lib/utils";
+import { ThemedPortal } from "../ThemedPortal";
 import type {
   DialogCloseProps,
   DialogContentProps,
@@ -46,8 +47,7 @@ interface DialogContextValue {
   contentId: string;
   titleId: string;
   descriptionId: string;
-  themeScope: HTMLElement | null;
-  setThemeScope: (scope: HTMLElement | null) => void;
+  referenceElement: Element | null;
 }
 
 const DialogContext = createContext<DialogContextValue | null>(null);
@@ -88,11 +88,10 @@ export function Dialog({
   const contentId = useId();
   const titleId = useId();
   const descriptionId = useId();
-  const [themeScope, setThemeScope] = useState<HTMLElement | null>(null);
-  const setOpen = (nextOpen: boolean) => {
+  const setOpen = useCallback((nextOpen: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(nextOpen);
     onOpenChange?.(nextOpen);
-  };
+  }, [controlledOpen, onOpenChange]);
   const floatingData = useFloating({ open, onOpenChange: setOpen });
   const click = useClick(floatingData.context, { toggle: true });
   const dismiss = useDismiss(floatingData.context, {
@@ -115,11 +114,11 @@ export function Dialog({
       contentId,
       titleId,
       descriptionId,
-      themeScope,
-      setThemeScope,
+      referenceElement: floatingData.elements.domReference,
     }),
     [
       open,
+      setOpen,
       modal,
       closeOnOverlayClick,
       floatingData.context,
@@ -129,7 +128,7 @@ export function Dialog({
       contentId,
       titleId,
       descriptionId,
-      themeScope,
+      floatingData.elements.domReference,
     ],
   );
   return (
@@ -140,26 +139,16 @@ export function Dialog({
 export const DialogTrigger = forwardRef<HTMLElement, DialogTriggerProps>(
   ({ asChild = false, children, ...props }, ref) => {
     const context = useDialogContext("DialogTrigger");
-    const setReference = useCallback(
-      (node: HTMLElement | null) => {
-        context.refs.setReference(node);
-        const scope = node?.closest<HTMLElement>("[data-dil-theme]") ?? null;
-        context.setThemeScope(scope);
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      },
-      [context, ref],
-    );
+    const setReference = useMergeRefs([context.refs.setReference, ref]);
     const triggerProps = context.getReferenceProps({
       ...props,
       id: context.triggerId,
-      ref: setReference,
       "aria-haspopup": "dialog",
       "aria-expanded": context.open,
     });
-    if (asChild) return <Slottable {...triggerProps}>{children}</Slottable>;
+    if (asChild) return <Slottable {...triggerProps} ref={setReference}>{children}</Slottable>;
     return (
-      <button type="button" {...triggerProps}>
+      <button type="button" {...triggerProps} ref={setReference}>
         {children}
       </button>
     );
@@ -179,9 +168,9 @@ export function DialogPortal({
   const context = useDialogContext("DialogPortal");
   if (!context.open && !forceMount) return null;
   return (
-    <FloatingPortal root={container ?? context.themeScope ?? undefined}>
+    <ThemedPortal container={container} reference={context.referenceElement}>
       {children}
-    </FloatingPortal>
+    </ThemedPortal>
   );
 }
 
@@ -199,7 +188,7 @@ export const DialogOverlay = forwardRef<HTMLDivElement, DialogOverlayProps>(
   ) => {
     const context = useDialogContext("DialogOverlay");
     if (!context.open && !forceMount) return null;
-    return (
+    const overlay = (
       <div
         ref={ref}
         data-state={context.open ? "open" : "closed"}
@@ -220,6 +209,7 @@ export const DialogOverlay = forwardRef<HTMLDivElement, DialogOverlayProps>(
         {...props}
       />
     );
+    return container ? <ThemedPortal container={container} reference={context.referenceElement}>{overlay}</ThemedPortal> : overlay;
   },
 );
 DialogOverlay.displayName = "DialogOverlay";

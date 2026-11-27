@@ -28,5 +28,6 @@ describe("Dialog", () => {
     expect(dialog).toHaveAccessibleDescription("Update settings.");
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Open" })).toHaveFocus();
   });
 });

@@ -21,6 +21,15 @@ export const retroTerminalTheme: Theme = {
       terminal: "#33FF33",
       overlay: "rgba(245, 241, 232, 0.88)",
     },
+    foregrounds: {
+      primary: "#000000",
+      secondary: "#000000",
+      success: "#000000",
+      warning: "#000000",
+      danger: "#000000",
+      info: "#000000",
+      muted: "#FFFFFF",
+    },
     spacing: {
       xs: "4px",
       sm: "8px",
@@ -87,6 +96,15 @@ export const retroTerminalTheme: Theme = {
       ink: "#0A0A0A",
       terminal: "#00FF41",
       overlay: "rgba(13, 13, 13, 0.9)",
+    },
+    foregrounds: {
+      primary: "#000000",
+      secondary: "#000000",
+      success: "#000000",
+      warning: "#000000",
+      danger: "#000000",
+      info: "#000000",
+      muted: "#000000",
     },
     spacing: {
       xs: "4px",

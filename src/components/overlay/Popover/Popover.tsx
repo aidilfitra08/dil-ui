@@ -3,6 +3,7 @@ import {
   createContext,
   forwardRef,
   isValidElement,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -14,7 +15,6 @@ import {
 import {
   FloatingFocusManager,
   FloatingNode,
-  FloatingPortal,
   FloatingTree,
   autoUpdate,
   flip,
@@ -26,11 +26,13 @@ import {
   useFloating,
   useFloatingNodeId,
   useInteractions,
+  useMergeRefs,
   useRole,
   type FloatingContext,
 } from "@floating-ui/react";
 
 import { cn } from "../../../lib/utils";
+import { ThemedPortal } from "../ThemedPortal";
 import type {
   PopoverAlign,
   PopoverAnchorProps,
@@ -47,6 +49,7 @@ interface PopoverContextValue {
   modal: boolean;
   context: FloatingContext;
   refs: ReturnType<typeof useFloating>["refs"];
+  referenceElement: Element | null;
   getReferenceProps: ReturnType<typeof useInteractions>["getReferenceProps"];
   getFloatingProps: ReturnType<typeof useInteractions>["getFloatingProps"];
   nodeId: string;
@@ -99,10 +102,10 @@ export function Popover({
   const [align, setAlign] = useState<PopoverAlign>("center");
   const [sideOffset, setSideOffset] = useState(8);
   const [alignOffset, setAlignOffset] = useState(0);
-  const setOpen = (nextOpen: boolean) => {
+  const setOpen = useCallback((nextOpen: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(nextOpen);
     onOpenChange?.(nextOpen);
-  };
+  }, [controlledOpen, onOpenChange]);
 
   const floating = useFloating({
     open,
@@ -138,6 +141,7 @@ export function Popover({
       modal,
       context: floating.context,
       refs: floating.refs,
+      referenceElement: floating.elements.domReference,
       getReferenceProps: interactions.getReferenceProps,
       getFloatingProps: interactions.getFloatingProps,
       nodeId,
@@ -158,9 +162,11 @@ export function Popover({
     }),
     [
       open,
+      setOpen,
       modal,
       floating.context,
       floating.refs,
+      floating.elements.domReference,
       interactions,
       nodeId,
       triggerId,
@@ -184,17 +190,17 @@ export function Popover({
 export const PopoverTrigger = forwardRef<HTMLElement, PopoverTriggerProps>(
   ({ asChild = false, children, onClick, ...props }, ref) => {
     const context = usePopoverContext("PopoverTrigger");
+    const setReference = useMergeRefs([context.refs.setReference, ref]);
     const triggerProps = context.getReferenceProps({
       ...props,
       id: context.triggerId,
-      ref: composeRefs(context.refs.setReference, ref),
       "aria-controls": context.open ? context.contentId : undefined,
       "aria-expanded": context.open,
       onClick,
     });
-    if (asChild) return <Slottable {...triggerProps}>{children}</Slottable>;
+    if (asChild) return <Slottable {...triggerProps} ref={setReference}>{children}</Slottable>;
     return (
-      <button type="button" {...triggerProps}>
+      <button type="button" {...triggerProps} ref={setReference}>
         {children}
       </button>
     );
@@ -205,12 +211,9 @@ PopoverTrigger.displayName = "PopoverTrigger";
 export const PopoverAnchor = forwardRef<HTMLElement, PopoverAnchorProps>(
   ({ asChild = false, children, ...props }, ref) => {
     const context = usePopoverContext("PopoverAnchor");
-    const anchorProps = {
-      ...props,
-      ref: composeRefs(context.refs.setReference, ref),
-    };
-    if (asChild) return <Slottable {...anchorProps}>{children}</Slottable>;
-    return <span {...anchorProps}>{children}</span>;
+    const setReference = useMergeRefs([context.refs.setReference, ref]);
+    if (asChild) return <Slottable {...props} ref={setReference}>{children}</Slottable>;
+    return <span {...props} ref={setReference}>{children}</span>;
   },
 );
 PopoverAnchor.displayName = "PopoverAnchor";
@@ -233,23 +236,9 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(
     ref,
   ) => {
     const context = usePopoverContext("PopoverContent");
-    const [mountedSide, setMountedSide] = useState(side);
-    const [mountedAlign, setMountedAlign] = useState(align);
     const shouldRender = context.open || forceMount;
-    const referenceElement = context.refs.domReference.current;
-    const themeScope =
-      typeof HTMLElement !== "undefined" &&
-      referenceElement instanceof HTMLElement
-        ? referenceElement.closest<HTMLElement>("[data-dil-theme]")
-        : null;
-    // `FloatingPortal` treats an explicit `null` root as “do not mount”.
-    // Omit the root when no themed scope has been found so it can safely
-    // fall back to document.body.
-    const portalRoot = container ?? themeScope ?? undefined;
     useEffect(() => {
       context.setPlacement(side, align);
-      setMountedSide(side);
-      setMountedAlign(align);
       context.setOffsets(sideOffset, alignOffset);
     }, [align, alignOffset, context, side, sideOffset]);
     if (!shouldRender) return null;
@@ -260,8 +249,8 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(
         id={context.contentId}
         role="dialog"
         data-state={context.open ? "open" : "closed"}
-        data-side={mountedSide}
-        data-align={mountedAlign}
+        data-side={side}
+        data-align={align}
         className={cn(
           "z-50 min-w-32 rounded-(--dil-radius-md) border-2 border-(--dil-color-border) bg-(--dil-color-surface) p-4 text-(--dil-color-text) shadow-(--dil-shadow-lg) outline-none",
           "data-[state=closed]:animate-out data-[state=open]:animate-in",
@@ -280,7 +269,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(
           })
         : content;
     return (
-      <FloatingPortal root={portalRoot}>
+      <ThemedPortal container={container} reference={context.referenceElement}>
         {context.modal ? (
           <FloatingFocusManager context={context.context} modal>
             {wrapped}
@@ -288,7 +277,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(
         ) : (
           wrapped
         )}
-      </FloatingPortal>
+      </ThemedPortal>
     );
   },
 );

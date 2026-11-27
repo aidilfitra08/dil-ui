@@ -27,7 +27,12 @@ export interface ThemeEffects {
   paperTexture: string;
 }
 
+export const filledTones = ["primary", "secondary", "success", "warning", "danger", "info", "muted"] as const;
+export type FilledTone = (typeof filledTones)[number];
+
 export interface ThemeTokens {
+  /** Text and icon colors for the corresponding solid fills. */
+  foregrounds?: Partial<Record<FilledTone, string>>;
   colors: ThemeColors;
 
   spacing: Record<SizeScale, string>;

@@ -13,7 +13,6 @@ import {
   type ReactNode,
 } from "react";
 import {
-  FloatingPortal,
   autoUpdate,
   flip,
   offset,
@@ -24,11 +23,13 @@ import {
   useHover,
   useFocus,
   useInteractions,
+  useMergeRefs,
   useRole,
   type FloatingContext,
 } from "@floating-ui/react";
 
 import { cn } from "../../../lib/utils";
+import { ThemedPortal } from "../ThemedPortal";
 import type {
   TooltipAlign,
   TooltipContentProps,
@@ -47,8 +48,7 @@ interface TooltipContextValue {
   nodeId: string;
   triggerId: string;
   contentId: string;
-  themeScope: HTMLElement | null;
-  setThemeScope: (scope: HTMLElement | null) => void;
+  referenceElement: Element | null;
   setPlacement: (
     side: TooltipSide,
     align: TooltipAlign,
@@ -90,12 +90,11 @@ export function Tooltip({
   const [align, setAlign] = useState<TooltipAlign>("center");
   const [sideOffset, setSideOffset] = useState(8);
   const [alignOffset, setAlignOffset] = useState(0);
-  const [themeScope, setThemeScope] = useState<HTMLElement | null>(null);
 
-  const setOpen = (nextOpen: boolean) => {
+  const setOpen = useCallback((nextOpen: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(nextOpen);
     onOpenChange?.(nextOpen);
-  };
+  }, [controlledOpen, onOpenChange]);
 
   const floating = useFloating({
     open,
@@ -133,8 +132,7 @@ export function Tooltip({
       nodeId,
       triggerId,
       contentId,
-      themeScope,
-      setThemeScope,
+      referenceElement: floating.elements.domReference,
       setPlacement: (nextSide, nextAlign, nextSideOffset, nextAlignOffset) => {
         setSide(nextSide);
         setAlign(nextAlign);
@@ -144,13 +142,14 @@ export function Tooltip({
     }),
     [
       open,
+      setOpen,
       floating.context,
       floating.refs,
       interactions,
       nodeId,
       triggerId,
       contentId,
-      themeScope,
+      floating.elements.domReference,
     ],
   );
 
@@ -162,26 +161,15 @@ export function Tooltip({
 export const TooltipTrigger = forwardRef<HTMLElement, TooltipTriggerProps>(
   ({ asChild = false, children, ...props }, ref) => {
     const context = useTooltipContext("TooltipTrigger");
-    const setReference = useCallback(
-      (node: HTMLElement | null) => {
-        context.refs.setReference(node);
-        context.setThemeScope(
-          node?.closest<HTMLElement>("[data-dil-theme]") ?? null,
-        );
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      },
-      [context, ref],
-    );
+    const setReference = useMergeRefs([context.refs.setReference, ref]);
     const triggerProps = context.getReferenceProps({
       ...props,
-      ref: setReference,
       id: context.triggerId,
       "aria-describedby": context.open ? context.contentId : undefined,
     });
-    if (asChild) return <Slottable {...triggerProps}>{children}</Slottable>;
+    if (asChild) return <Slottable {...triggerProps} ref={setReference}>{children}</Slottable>;
     return (
-      <button type="button" {...triggerProps}>
+      <button type="button" {...triggerProps} ref={setReference}>
         {children}
       </button>
     );
@@ -210,7 +198,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
     }, [align, alignOffset, context, side, sideOffset]);
     if (!context.open && !forceMount) return null;
     return (
-      <FloatingPortal root={container ?? context.themeScope ?? undefined}>
+      <ThemedPortal container={container} reference={context.referenceElement}>
         <div
           ref={(node) => {
             context.refs.setFloating(node);
@@ -231,7 +219,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
         >
           {children}
         </div>
-      </FloatingPortal>
+      </ThemedPortal>
     );
   },
 );
