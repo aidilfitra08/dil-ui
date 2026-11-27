@@ -162,7 +162,7 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         key={dateValue}
                         type="button"
                         className={cn(
-                          "aspect-square",
+                          "aspect-square focus-visible:outline-2 focus-visible:outline-(--dil-color-text)",
                           !isCurrentMonth && "text-(--dil-color-muted)",
                           dateValue === selectedValue.start
                             ? "rounded-l-(--dil-radius-sm)"
@@ -171,10 +171,10 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             ? "rounded-r-(--dil-radius-sm)"
                             : "",
                           isSelected
-                            ? "bg-(--dil-color-primary)"
+                            ? "bg-(--dil-color-primary) text-(--dil-color-primary-foreground)"
                             : isInRange
-                              ? "bg-(--dil-color-muted)"
-                              : "hover:bg-(--dil-color-secondary)",
+                              ? "bg-(--dil-color-muted) text-(--dil-color-muted-foreground)"
+                              : "hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground)",
                         )}
                         onClick={() => selectDate(date)}
                       >

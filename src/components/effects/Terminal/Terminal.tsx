@@ -1,11 +1,11 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 
 import type { TerminalLine, TerminalProps } from "./Terminal.types";
 import { cn } from "../../../lib/utils";
 
 const lineClasses: Record<NonNullable<TerminalLine["type"]>, string> = {
-  command: "text-(--dil-color-terminal)",
-  system: "text-(--dil-color-terminal)",
+  command: "font-semibold text-(--dil-color-text)",
+  system: "text-(--dil-color-text)",
   output: "pl-4 text-(--dil-color-muted)",
 };
 
@@ -18,6 +18,7 @@ export const Terminal = forwardRef<HTMLDivElement, TerminalProps>(
       prompt = "$",
       placeholder = "Type a command",
       maxHeight = 420,
+      followOutput = false,
       showInput = true,
       command,
       defaultCommand = "",
@@ -31,6 +32,12 @@ export const Terminal = forwardRef<HTMLDivElement, TerminalProps>(
     const [uncontrolledCommand, setUncontrolledCommand] =
       useState(defaultCommand);
     const currentCommand = command ?? uncontrolledCommand;
+    const outputViewport = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const viewport = outputViewport.current;
+      if (followOutput && viewport) viewport.scrollTop = viewport.scrollHeight;
+    }, [followOutput, lines]);
 
     return (
       <div
@@ -41,7 +48,7 @@ export const Terminal = forwardRef<HTMLDivElement, TerminalProps>(
           "rounded-(--dil-radius-lg)",
           "border-2",
           "border-(--dil-color-terminal)",
-          "bg-(--dil-color-ink)",
+          "bg-(--dil-color-surface)",
           "p-6",
           "font-mono",
           "text-(length:--dil-font-sm)",
@@ -56,20 +63,23 @@ export const Terminal = forwardRef<HTMLDivElement, TerminalProps>(
             <span className="size-3 rounded-full bg-(--dil-color-warning)" />
             <span className="size-3 rounded-full bg-(--dil-color-terminal)" />
           </div>
-          <span className="ml-2 text-(--dil-color-terminal)">
+          <span className="ml-2 text-(--dil-color-text)">
             {terminalTitle}
           </span>
         </div>
 
-        <div className="overflow-y-auto pr-2" style={{ maxHeight }}>
+        <div ref={outputViewport} className="overflow-y-auto pr-2" style={{ maxHeight }}>
           <div className="space-y-1">
             {lines.map((line, index) => {
               const type = line.type ?? "output";
 
               return (
-                <div key={line.id ?? index} className={lineClasses[type]}>
+                <div
+                  key={line.id ?? index}
+                  className={cn("whitespace-pre-wrap wrap-anywhere", lineClasses[type])}
+                >
                   {type === "command" && (
-                    <span className="text-(--dil-color-warning)">
+                    <span aria-hidden="true" className="font-bold text-(--dil-color-text)">
                       {prompt}{" "}
                     </span>
                   )}
@@ -80,7 +90,7 @@ export const Terminal = forwardRef<HTMLDivElement, TerminalProps>(
 
             {showInput && (
               <form
-                className="mt-3 flex items-center gap-2 text-(--dil-color-terminal)"
+                className="mt-3 flex items-center gap-2 rounded-sm text-(--dil-color-text) focus-within:outline-2 focus-within:outline-(--dil-color-text)"
                 onSubmit={(event) => {
                   event.preventDefault();
                   onCommandSubmit?.(currentCommand, event);
@@ -90,7 +100,7 @@ export const Terminal = forwardRef<HTMLDivElement, TerminalProps>(
                   }
                 }}
               >
-                <span className="text-(--dil-color-warning)">{prompt}</span>
+                <span aria-hidden="true" className="font-bold text-(--dil-color-text)">{prompt}</span>
                 <input
                   {...inputProps}
                   value={currentCommand}
@@ -106,7 +116,7 @@ export const Terminal = forwardRef<HTMLDivElement, TerminalProps>(
                     "min-w-0",
                     "flex-1",
                     "bg-transparent",
-                    "text-(--dil-color-terminal)",
+                    "text-(--dil-color-text)",
                     "outline-none",
                     "placeholder:text-(--dil-color-muted)",
                     inputProps?.className,

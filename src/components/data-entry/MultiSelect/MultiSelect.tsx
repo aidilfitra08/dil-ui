@@ -95,7 +95,7 @@ export const MultiSelect = forwardRef<HTMLSelectElement, MultiSelectProps>(
                   key={item}
                   type="button"
                   aria-label={`Remove ${item}`}
-                  className="inline-flex items-center gap-1 rounded-full bg-(--dil-color-secondary) px-2 py-0.5 text-sm hover:bg-(--dil-color-primary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary) cursor-pointer"
+                  className="inline-flex items-center gap-1 rounded-full bg-(--dil-color-secondary) px-2 py-0.5 text-sm text-(--dil-color-secondary-foreground) hover:bg-(--dil-color-primary) hover:text-(--dil-color-primary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary) cursor-pointer"
                   onClick={(event) => {
                     event.stopPropagation();
                     toggleOption(item);

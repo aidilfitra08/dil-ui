@@ -18,7 +18,7 @@ export const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
       role="status"
       aria-label={label}
       className={cn(
-        "inline-block animate-spin rounded-full border-(--dil-color-muted) border-t-(--dil-color-primary)",
+        "inline-block motion-safe:animate-spin motion-reduce:animate-none rounded-full border-(--dil-color-muted) border-t-(--dil-color-primary)",
         sizeClasses[size],
         className,
       )}

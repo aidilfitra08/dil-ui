@@ -21,7 +21,7 @@ function monthDays(month: Date) {
 }
 
 const pickerButtonClass =
-  "rounded-(--dil-radius-sm) border border-transparent px-2 py-1 text-(--dil-color-text) transition-colors hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary) cursor-pointer";
+  "rounded-(--dil-radius-sm) border border-transparent px-2 py-1 text-(--dil-color-text) transition-colors motion-reduce:transition-none hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-text) cursor-pointer";
 
 export function YearPanel({
   value,
@@ -59,9 +59,9 @@ export function YearPanel({
             type="button"
             aria-pressed={year === value}
             className={cn(
-              "rounded-(--dil-radius-sm) border border-transparent px-2 py-2 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary) cursor-pointer",
+              "rounded-(--dil-radius-sm) border border-transparent px-2 py-2 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-text) cursor-pointer",
               year === value &&
-                "border-(--dil-color-border) bg-(--dil-color-primary)",
+                "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-primary-foreground) hover:bg-(--dil-color-primary) hover:text-(--dil-color-primary-foreground)",
             )}
             onClick={() => onChange(year)}
           >
@@ -174,10 +174,10 @@ export function CalendarPanel({
               type="button"
               aria-pressed={key === value}
               className={cn(
-                "aspect-square rounded-(--dil-radius-sm) border border-transparent text-(--dil-color-text) transition-colors hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary) cursor-pointer",
+                "aspect-square rounded-(--dil-radius-sm) border border-transparent text-(--dil-color-text) transition-colors motion-reduce:transition-none hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-text) cursor-pointer",
                 !currentMonth && "text-(--dil-color-muted) opacity-60",
                 key === value &&
-                  "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-text) hover:bg-(--dil-color-primary)",
+                  "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-primary-foreground) hover:bg-(--dil-color-primary) hover:text-(--dil-color-primary-foreground)",
               )}
               onClick={() => onChange(key)}
             >
@@ -218,7 +218,7 @@ export function MonthPanel({
       <div className="mb-3 flex items-center justify-between gap-2">
         <button
           type="button"
-          className="rounded-(--dil-radius-sm) border border-transparent px-2 py-1 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary)"
+          className="rounded-(--dil-radius-sm) border border-transparent px-2 py-1 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-text)"
           onClick={() => setYear((current) => current - 1)}
         >
           Previous
@@ -232,7 +232,7 @@ export function MonthPanel({
         </button>
         <button
           type="button"
-          className="rounded-(--dil-radius-sm) border border-transparent px-2 py-1 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary)"
+          className="rounded-(--dil-radius-sm) border border-transparent px-2 py-1 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-text)"
           onClick={() => setYear((current) => current + 1)}
         >
           Next
@@ -248,9 +248,9 @@ export function MonthPanel({
               aria-pressed={key === value}
               key={key}
               className={cn(
-                "rounded-(--dil-radius-sm) border border-transparent px-2 py-2 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary) cursor-pointer",
+                "rounded-(--dil-radius-sm) border border-transparent px-2 py-2 text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-text) cursor-pointer",
                 key === value &&
-                  "border-(--dil-color-border) bg-(--dil-color-primary)",
+                  "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-primary-foreground) hover:bg-(--dil-color-primary) hover:text-(--dil-color-primary-foreground)",
               )}
               onClick={() => onChange(key)}
             >
@@ -283,7 +283,7 @@ export function TimePanel({
   const selectTime = (hour: string, minute: string) =>
     onChange(`${hour}:${minute}`);
   const buttonClass =
-    "w-full rounded-(--dil-radius-sm) border border-transparent px-3 py-2 text-sm text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) focus-visible:outline-2 focus-visible:outline-(--dil-color-primary) cursor-pointer";
+    "w-full rounded-(--dil-radius-sm) border border-transparent px-3 py-2 text-sm text-(--dil-color-text) hover:border-(--dil-color-border) hover:bg-(--dil-color-secondary) hover:text-(--dil-color-secondary-foreground) focus-visible:outline-2 focus-visible:outline-(--dil-color-text) cursor-pointer";
 
   return (
     <div className="grid w-[min(16rem,calc(100vw-2rem))] grid-cols-2 gap-2 text-(--dil-color-text)">
@@ -303,7 +303,7 @@ export function TimePanel({
               className={cn(
                 buttonClass,
                 hour === selectedHour &&
-                  "border-(--dil-color-border) bg-(--dil-color-primary)",
+                  "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-primary-foreground) hover:bg-(--dil-color-primary) hover:text-(--dil-color-primary-foreground)",
               )}
               onClick={() => selectTime(hour, selectedMinute)}
             >
@@ -328,7 +328,7 @@ export function TimePanel({
               className={cn(
                 buttonClass,
                 minute === selectedMinute &&
-                  "border-(--dil-color-border) bg-(--dil-color-primary)",
+                  "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-primary-foreground) hover:bg-(--dil-color-primary) hover:text-(--dil-color-primary-foreground)",
               )}
               onClick={() => selectTime(selectedHour, minute)}
             >

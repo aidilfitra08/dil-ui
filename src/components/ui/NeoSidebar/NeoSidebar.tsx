@@ -15,9 +15,9 @@ function SidebarLink({
     </>
   );
   const className = cn(
-    "flex min-h-11 w-full items-center gap-3 border-2 border-transparent px-3 py-2 text-left text-xs font-bold uppercase tracking-[0.08em] transition-transform hover:-translate-y-px active:translate-x-px active:translate-y-px",
+    "flex min-h-11 w-full items-center gap-3 border-2 border-transparent px-3 py-2 text-left text-xs font-bold uppercase tracking-[0.08em] transition-transform motion-safe:hover:-translate-y-px motion-safe:active:translate-x-px motion-safe:active:translate-y-px motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--dil-color-text)",
     item.active
-      ? "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-ink) shadow-(--dil-shadow-sm)"
+      ? "border-(--dil-color-border) bg-(--dil-color-primary) text-(--dil-color-primary-foreground) shadow-(--dil-shadow-sm)"
       : "text-(--dil-color-muted) hover:text-(--dil-color-text)",
   );
 
@@ -59,7 +59,7 @@ export function NeoSidebar({
       <div
         aria-hidden="true"
         className={cn(
-          "fixed inset-0 z-40 bg-black/40 transition-opacity md:hidden",
+          "fixed inset-0 z-40 bg-black/40 transition-opacity motion-reduce:transition-none md:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={onClose}
@@ -67,7 +67,7 @@ export function NeoSidebar({
       <aside
         aria-label="Sidebar navigation"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[min(18rem,85vw)] flex-col border-r-[3px] border-(--dil-color-border) bg-(--dil-color-surface) p-(--dil-spacing-md) shadow-[4px_0_0_var(--dil-color-border)] transition-transform duration-200 md:sticky md:top-0 md:z-auto md:h-screen md:w-64 md:translate-x-0 md:shadow-none",
+          "fixed inset-y-0 left-0 z-50 flex w-[min(18rem,85vw)] flex-col border-r-[3px] border-(--dil-color-border) bg-(--dil-color-surface) p-(--dil-spacing-md) shadow-[4px_0_0_var(--dil-color-border)] transition-transform duration-200 motion-reduce:transition-none md:sticky md:top-0 md:z-auto md:h-screen md:w-64 md:translate-x-0 md:shadow-none",
           open ? "translate-x-0" : "-translate-x-full",
           className,
         )}

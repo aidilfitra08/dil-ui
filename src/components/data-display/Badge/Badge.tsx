@@ -6,11 +6,11 @@ import { cn } from "../../../lib/utils";
 const variantClasses: Record<BadgeVariant, string> = {
   primary: `
     bg-[var(--dil-color-primary)]
-    text-[var(--dil-color-text)]
+    text-[color:var(--dil-color-primary-foreground,var(--dil-color-text,currentColor))]
   `,
   secondary: `
     bg-[var(--dil-color-secondary)]
-    text-[var(--dil-color-text)]
+    text-[color:var(--dil-color-secondary-foreground,var(--dil-color-text,currentColor))]
   `,
   outline: `
     bg-[var(--dil-color-surface)]

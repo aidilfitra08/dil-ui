@@ -1,8 +1,8 @@
 import type {
   ChangeEvent,
+  ComponentPropsWithRef,
   FormEvent,
   HTMLAttributes,
-  InputHTMLAttributes,
   ReactNode,
 } from "react";
 
@@ -20,6 +20,8 @@ export interface TerminalProps extends HTMLAttributes<HTMLDivElement> {
   prompt?: ReactNode;
   placeholder?: string;
   maxHeight?: number | string;
+  /** Scroll to the command prompt when the lines change. Defaults to false. */
+  followOutput?: boolean;
   showInput?: boolean;
   command?: string;
   defaultCommand?: string;
@@ -32,7 +34,7 @@ export interface TerminalProps extends HTMLAttributes<HTMLDivElement> {
     event: FormEvent<HTMLFormElement>,
   ) => void;
   inputProps?: Omit<
-    InputHTMLAttributes<HTMLInputElement>,
+    ComponentPropsWithRef<"input">,
     "value" | "defaultValue" | "onChange" | "placeholder"
   >;
 }

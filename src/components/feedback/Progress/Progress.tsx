@@ -40,7 +40,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
           )}
         >
           <div
-            className="h-full rounded-full bg-(--dil-color-primary) transition-[width] duration-300"
+            className="h-full rounded-full bg-(--dil-color-primary) transition-[width] duration-300 motion-reduce:transition-none"
             style={{ width: `${percentage}%` }}
           />
         </div>

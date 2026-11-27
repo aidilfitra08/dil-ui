@@ -44,10 +44,10 @@ export const LoadingBar = forwardRef<HTMLDivElement, LoadingBarProps>(
       >
         <div
           className={cn(
-            "h-full transition-[width] duration-300",
+            "h-full transition-[width] duration-300 motion-reduce:transition-none",
             variantClasses[variant],
             indeterminate &&
-              "absolute w-1/2 animate-[loading-bar_1.2s_ease-in-out_infinite]",
+              "absolute w-1/2 motion-safe:animate-[dil-ui-loading-bar_1.2s_ease-in-out_infinite] motion-reduce:animate-none motion-reduce:left-1/4",
           )}
           style={indeterminate ? undefined : { width: `${percentage}%` }}
         />

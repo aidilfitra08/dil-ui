@@ -17,7 +17,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         "px-3",
         "text-(length:--dil-font-md)",
         "text-(--dil-color-text)",
-        "outline-none",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--dil-color-text)",
         "focus:border-(--dil-color-primary)",
         "disabled:cursor-not-allowed",
         "disabled:opacity-50",

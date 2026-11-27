@@ -19,7 +19,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         "font-[inherit]",
         "text-(length:--dil-font-md)",
         "text-(--dil-color-text)",
-        "outline-none",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--dil-color-text)",
         "placeholder:text-(--dil-color-text)",
         "focus:border-(--dil-color-primary)",
         "disabled:cursor-not-allowed",

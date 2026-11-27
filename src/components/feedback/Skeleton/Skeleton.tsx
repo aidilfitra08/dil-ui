@@ -42,7 +42,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
           ref={ref}
           aria-hidden={loading}
           className={cn(
-            "animate-pulse bg-(--dil-color-muted)",
+            "motion-safe:animate-pulse motion-reduce:animate-none bg-(--dil-color-muted)",
             variantClasses[variant],
             className,
           )}
@@ -69,7 +69,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
           <div
             role="status"
             aria-label="Loading"
-            className="pointer-events-none absolute left-0 top-0 animate-pulse rounded-(--dil-radius-md) bg-(--dil-color-muted)"
+            className="pointer-events-none absolute left-0 top-0 motion-safe:animate-pulse motion-reduce:animate-none rounded-(--dil-radius-md) bg-(--dil-color-muted)"
             style={{
               width: contentSize.width || "100%",
               height: contentSize.height || "100%",
