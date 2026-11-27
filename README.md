@@ -22,10 +22,12 @@ A React component library built with TypeScript. Components are exported from th
 ## Installation
 
 ```bash
-npm install dil-ui
+npm install ../dil-ui/dil-ui-0.2.0-rc.1.tgz
 ```
 
-Import the library stylesheet once in your application entry point:
+Use the path to the archive produced by npm pack. See the [release and installation guide](docs/releasing.md) for versioned installs.
+
+Import the library stylesheet once in your application entry point.
 
 ```tsx
 import "dil-ui/styles.css";
@@ -125,14 +127,30 @@ const base = themeRegistry.glassmorphism;
 const oceanTheme: Theme = {
   ...base,
   name: "ocean",
-  light: { ...base.light, colors: { ...base.light.colors, primary: "#0f766e" } },
-  dark: { ...base.dark, colors: { ...base.dark.colors, primary: "#5eead4" } },
+  light: {
+    ...base.light,
+    colors: { ...base.light.colors, primary: "#075985" },
+    foregrounds: { ...base.light.foregrounds, primary: "#FFFFFF" },
+  },
+  dark: {
+    ...base.dark,
+    colors: { ...base.dark.colors, primary: "#7DD3FC" },
+    foregrounds: { ...base.dark.foregrounds, primary: "#000000" },
+  },
 };
 
 <ThemeProvider theme={oceanTheme} mode="system">{/* app */}</ThemeProvider>;
 ```
 
 The `Theme` type and built-in `themeRegistry` are exported from `dil-ui`. Custom themes need both light and dark tokens and can also be passed to `ThemeScope`. Use `useTheme` and `useThemeTokens` to access the active theme within components.
+
+`ThemeProvider` and `ThemeScope` include theme tokens in the server HTML. Explicit `light` and `dark` modes render their own tokens immediately. On the server and during hydration, `system` starts with light tokens. It follows the browser preference after hydration and updates when that preference changes.
+
+`ThemeScope` provides its preset and mode to `useTheme` and `useThemeTokens` inside the scope. Dialog, Popover, and Tooltip use the nearest theme. A custom portal target keeps its placement and receives the source theme tokens when it belongs to a different scope.
+
+The optional `ThemeTokens.foregrounds` entries pair text and icons with their corresponding solid fills. Set the foreground when overriding a fill and verify the pair reaches 4.5:1 for normal text. An omitted entry uses the theme's `colors.text` value.
+
+Give an icon-only `IconButton` a name with `aria-label` or `aria-labelledby`. Open the showcase's **Actions** section to compare filled, transparent, and disabled controls through the preset and color-mode controls.
 
 ## Development
 
@@ -143,4 +161,30 @@ npm test
 npm run build
 ```
 
+`npm pack` builds the library and verifies the package's JavaScript, CSS and declaration entry points. Recharts is installed as a package dependency. If you load the UMD bundle directly from a script tag, load Recharts first so the `Recharts` global is available.
+
 The package is pre-1.0, so component APIs may change as the library develops.
+
+## Stylesheet isolation
+
+Import `dil-ui/styles.css` once. The package scopes its resets and generated utilities to dil-ui component markup. It uses private names for its Tailwind utility properties and animations. Components can render outside `ThemeProvider`, and your app's Tailwind utilities can override component defaults through `className`.
+
+The showcase compiles its own page styles. They are separate from the published stylesheet.
+
+## Next.js App Router
+
+Import `dil-ui/styles.css` from your root layout. Import interactive dil-ui components and hooks from a client component with a `"use client"` directive. The server page can render that client component.
+
+The packed package was verified in a Next.js 16.4.6 production build with React 19.3.0, including prerendered content, stylesheet loading and a hydrated button interaction.
+
+## Component showcase
+
+Run `npm run dev` to browse the examples in `src/examples`. The showcase lets you select a theme preset and color mode, compare unthemed examples, and open a navbar and sidebar demo.
+
+Open **Portfolio patterns** (`?example=portfolio`) to try section navigation and terminal commands. Enter `help`, use the arrow keys to recall commands, and enter `cv` to preview a dialog. On mobile, open the navigation menu with Enter and dismiss it with Escape.
+
+Run `npm run build:showcase` to create a static site in `dist-showcase/`. Run `npm run preview:showcase` to preview that output locally. A static host can serve that directory, including when hosted under a subdirectory. The library package uses `dist/`.
+
+## Production readiness
+
+See the [readiness review](docs/production-readiness.md) and [release plan](docs/production-readiness-plan.md).
