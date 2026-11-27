@@ -24,14 +24,14 @@ npm install ../dil-ui/dil-ui-0.2.0-rc.1.tgz
 
 ## Publish and install from npm
 
-The public npm registry lists dil-dev as the maintainer of dil-ui and 0.1.0 as latest. The 0.2.0-rc.1 version is unused. Use the maintainer account to sign in and verify the account before publishing.
+The public npm registry lists dil-dev as the maintainer of dil-ui, 0.1.0 as latest, and 0.2.0-rc.1 under next. Use the maintainer account to sign in and verify the account before publishing.
 
 ~~~sh
 npm login --registry=https://registry.npmjs.org
 npm whoami --registry=https://registry.npmjs.org
 ~~~
 
-Publish the verified archive after approval. The next tag keeps 0.1.0 on latest while the candidate is evaluated.
+Publish the verified archive after approval. The command below records the 0.2.0-rc.1 publication. For a new candidate, use its new archive name and version. The next tag keeps 0.1.0 on latest during evaluation.
 
 ~~~sh
 npm publish ./dil-ui-0.2.0-rc.1.tgz --access public --tag next --registry=https://registry.npmjs.org
@@ -61,7 +61,7 @@ The local archive passed lint, 55 unit tests, the showcase build, archive checks
 
 A fresh Vite consumer reproduced the repository-relative install with npm ci from its generated lockfile. The npm publish dry run passed for the exact tarball. A runtime-only consumer audit reported zero known vulnerabilities. The registry install and deployment preview still need verification after publication.
 
-Archive SHA-256 is DB1129BA4DB9C026A0F9D6FF57F8F48034A9E734A5982838D9DD62BF6A9BB6D2. Publication and remote CI are pending.
+Archive SHA-256 is DB1129BA4DB9C026A0F9D6FF57F8F48034A9E734A5982838D9DD62BF6A9BB6D2. The npm download and a clean rebuild of local source tag v0.2.0-rc.1 both matched this checksum. Remote CI and the portfolio deployment preview are pending.
 
 
 ### Portfolio preflight

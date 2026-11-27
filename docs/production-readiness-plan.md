@@ -29,4 +29,5 @@ The goal is to ship reusable React components with consistent styling across all
 - [ ] Revisit inline status, project media and retro surfaces where actual route checks expose a reusable gap.
 - [x] Meet the 16-of-19 library coverage gate with browser evidence across all six preset and mode combinations. Portfolio lint and a versioned release remain prerequisites for adoption.
 - [x] Prepare 0.2.0-rc.1 with the MIT license, changelog, release checklist and installation examples. Clean Vite and Next.js consumers built from the same tarball. Chromium reverified all 16 covered patterns in the Next.js production build.
-- [ ] Publish the verified artifact to a distribution channel authorized for this repository. Verify the deployment install path before switching the portfolio dependency.
+- [x] Publish 0.2.0-rc.1 to npm under next and verify that latest remains 0.1.0. The registry download matches the tested tarball, and the release source rebuilds the same archive.
+- [ ] Verify the portfolio deployment preview after pinning the exact registry version.
