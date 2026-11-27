@@ -10,7 +10,9 @@ describe("Slider", () => {
     const thumb = screen.getByRole("slider");
 
     expect(thumb).toHaveAttribute("aria-valuenow", "50");
+    thumb.focus();
     fireEvent.keyDown(thumb, { key: "ArrowRight" });
+    expect(thumb).toHaveFocus();
     expect(thumb).toHaveAttribute("aria-valuenow", "51");
     expect(onChange).toHaveBeenCalledWith([51]);
   });

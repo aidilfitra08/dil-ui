@@ -232,7 +232,7 @@ export function ChartLegendContent({
   if (!payload?.length) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 pt-3">
+    <div className={cn("flex flex-wrap items-center justify-center gap-x-4 gap-y-2 pt-3")}>
       {payload.map((item, index) => {
         const key = getItemKey(config, item.dataKey, nameKey ?? item.value?.toString());
         const series = config[key];

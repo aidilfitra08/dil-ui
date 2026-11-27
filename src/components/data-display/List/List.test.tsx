@@ -63,7 +63,7 @@ describe("List", () => {
     expect(screen.getByText("Marker 0")).toBeInTheDocument();
     expect(screen.getByText("Marker 1")).toBeInTheDocument();
     expect(renderMarker.mock.calls.map(([index]) => index)).toEqual([0, 1]);
-    expect(screen.getByText("Second").parentElement).toHaveClass("min-w-0");
+    expect(screen.getByText(/Second.*wrapped/)).toHaveClass("min-w-0");
   });
 
   it("falls back to native markers when a custom renderer is missing", () => {
@@ -104,7 +104,7 @@ describe("List", () => {
     expect(item).toHaveAttribute("id", "first-item");
     expect(item).toHaveAttribute("title", "First item");
     expect(item).toHaveClass("custom-item");
-    expect(item).toHaveStyle({ color: "red" });
+    expect(item).toHaveStyle({ color: "rgb(255, 0, 0)" });
     fireEvent.click(item);
     expect(onClick).toHaveBeenCalledOnce();
   });

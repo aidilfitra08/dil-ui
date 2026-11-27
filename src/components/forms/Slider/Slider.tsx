@@ -77,10 +77,14 @@ export function Slider({
       ),
     [defaultValue, max, min, minStepsBetweenThumbs, step, value],
   );
-  const [uncontrolledValues, setUncontrolledValues] = useState(() =>
-    normalizeValues(defaultValue, min, max, step, minStepsBetweenThumbs),
-  );
-  const currentValues = value === undefined ? uncontrolledValues : values;
+  const [uncontrolled, setUncontrolled] = useState({ initial: values, current: values });
+  const defaultsChanged = uncontrolled.initial !== values;
+  if (value === undefined && defaultsChanged) {
+    setUncontrolled({ initial: values, current: values });
+  }
+  const currentValues = value === undefined && !defaultsChanged
+    ? uncontrolled.current
+    : values;
   const rootRef = useRef<HTMLDivElement>(null);
   const activeThumbRef = useRef<number | null>(null);
   const lastCommittedRef = useRef(currentValues);
@@ -89,24 +93,6 @@ export function Slider({
   useEffect(() => {
     if (value !== undefined) lastCommittedRef.current = currentValues;
   }, [currentValues, value]);
-
-  useEffect(() => {
-    if (value === undefined) {
-      setUncontrolledValues((previous) => {
-        const next = normalizeValues(
-          defaultValue,
-          min,
-          max,
-          step,
-          minStepsBetweenThumbs,
-        );
-        return previous.length === next.length &&
-          previous.every((item, index) => item === next[index])
-          ? previous
-          : next;
-      });
-    }
-  }, [defaultValue, max, min, minStepsBetweenThumbs, step, value]);
 
   const updateValues = useCallback(
     (nextValues: number[], commit = false) => {
@@ -122,7 +108,7 @@ export function Slider({
         previousValues.length !== next.length ||
         previousValues.some((item, index) => item !== next[index]);
       if (changed) {
-        if (value === undefined) setUncontrolledValues(next);
+        if (value === undefined) setUncontrolled({ initial: values, current: next });
         onValueChange?.(next);
       }
       pendingValuesRef.current = commit ? null : next;
@@ -148,6 +134,7 @@ export function Slider({
       onValueCommit,
       step,
       value,
+      values,
     ],
   );
 
@@ -174,6 +161,20 @@ export function Slider({
     );
   };
 
+  const updateThumbValue = (index: number, rawValue: number) => {
+    const gap = Math.max(0, minStepsBetweenThumbs) * Math.min(step, max - min);
+    const lower = index === 0 ? min : currentValues[index - 1] + gap;
+    const upper =
+      index === currentValues.length - 1 ? max : currentValues[index + 1] - gap;
+    if (lower > upper) return;
+
+    updateValues(
+      currentValues.map((item, itemIndex) =>
+        itemIndex === index ? clamp(rawValue, lower, upper) : item,
+      ),
+    );
+  };
+
   const handlePointerDown = (
     event: PointerEvent<HTMLDivElement>,
     thumbIndex?: number,
@@ -184,21 +185,13 @@ export function Slider({
     const rawValue = valueFromPointer(event);
     const index = thumbIndex ?? selectThumb(rawValue);
     activeThumbRef.current = index;
-    updateValues(
-      currentValues.map((item, itemIndex) =>
-        itemIndex === index ? rawValue : item,
-      ),
-    );
+    updateThumbValue(index, rawValue);
   };
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
     if (activeThumbRef.current === null || disabled) return;
     const index = activeThumbRef.current;
-    updateValues(
-      currentValues.map((item, itemIndex) =>
-        itemIndex === index ? valueFromPointer(event) : item,
-      ),
-    );
+    updateThumbValue(index, valueFromPointer(event));
   };
 
   const handlePointerUp = () => {
@@ -238,11 +231,7 @@ export function Slider({
     else if (event.key === "End") nextValue = inverted ? min : max;
     else return;
     event.preventDefault();
-    updateValues(
-      currentValues.map((item, itemIndex) =>
-        itemIndex === index ? nextValue : item,
-      ),
-    );
+    updateThumbValue(index, nextValue);
   };
 
   const positions = currentValues.map((item) =>
@@ -299,7 +288,7 @@ export function Slider({
       </div>
       {currentValues.map((item, index) => (
         <div
-          key={`${index}-${item}`}
+          key={index}
           role="slider"
           tabIndex={disabled ? -1 : 0}
           aria-label={ariaLabel}

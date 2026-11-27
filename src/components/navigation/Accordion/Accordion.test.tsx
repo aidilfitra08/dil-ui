@@ -51,19 +51,20 @@ describe("Accordion", () => {
     await user.click(screen.getByRole("button", { name: "First question" }));
     expect(screen.getByText("First answer")).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Second question" }));
-    expect(screen.getByText("First answer")).not.toBeVisible();
+    expect(screen.queryByRole("region", { name: "First question" })).not.toBeInTheDocument();
     expect(screen.getByText("Second answer")).toBeVisible();
   });
 
   it("supports collapsible, multiple and default-expanded items", async () => {
     const user = userEvent.setup();
-    const { rerender } = render(
+    const { unmount } = render(
       <Example type="single" collapsible defaultValue="first" />,
     );
     await user.click(screen.getByRole("button", { name: "First question" }));
     expect(screen.getByText("First answer").closest('[role="region"]')).toHaveAttribute("aria-hidden", "true");
 
-    rerender(<Example type="multiple" defaultValue={["first"]} />);
+    unmount();
+    render(<Example type="multiple" defaultValue={["first"]} />);
     await user.click(screen.getByRole("button", { name: "Second question" }));
     expect(screen.getByText("First answer")).toBeVisible();
     expect(screen.getByText("Second answer")).toBeVisible();
@@ -153,6 +154,6 @@ describe("Accordion", () => {
     expect(disabled).toBeDisabled();
     expect(screen.getByText("Disabled answer").closest('[role="region"]')).toHaveAttribute("aria-hidden", "true");
     await user.click(disabled);
-    expect(screen.getByText("Disabled answer")).not.toBeVisible();
+    expect(screen.queryByRole("region", { name: "Disabled question" })).not.toBeInTheDocument();
   });
 });

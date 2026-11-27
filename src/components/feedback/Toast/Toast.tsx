@@ -1,7 +1,5 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -20,18 +18,13 @@ import type {
   ToastVariant,
 } from "./Toast.types";
 
-interface ToastContextValue {
-  toast: (options: ToastOptions | ReactNode) => string;
-  dismiss: (id: string) => void;
-}
-
-const ToastContext = createContext<ToastContextValue | null>(null);
+import { ToastContext } from "./ToastContext";
 
 const variantClasses: Record<ToastVariant, string> = {
   default:
     "bg-[var(--dil-color-surface,#ffffff)] text-[var(--dil-color-text,#111827)]",
   success:
-    "bg-[var(--dil-color-success,#16a34a)] text-[var(--dil-color-success-foreground,#ffffff)]",
+    "bg-[var(--dil-color-success,#16a34a)] text-[var(--dil-color-success-foreground,#000000)]",
   error:
     "bg-[var(--dil-color-danger,#dc2626)] text-[var(--dil-color-danger-foreground,#ffffff)]",
   warning:
@@ -84,7 +77,7 @@ function ToastCard({
         opacity: isStacked && index > 0 ? stackOpacity : undefined,
       }}
       className={cn(
-        "relative flex w-[min(24rem,calc(100vw-2rem))] items-start justify-between gap-4 rounded-(--dil-radius-md,0.375rem) border border-(--dil-color-border,#d1d5db) p-4 transition-[transform,opacity] duration-500",
+        "relative flex w-[min(24rem,calc(100vw-2rem))] items-start justify-between gap-4 rounded-(--dil-radius-md,0.375rem) border border-(--dil-color-border,#d1d5db) p-4 transition-[transform,opacity] duration-500 motion-reduce:transition-none",
         showShadow &&
           "shadow-(--dil-shadow-lg,0_10px_15px_-3px_rgb(0_0_0/0.1),0_4px_6px_-4px_rgb(0_0_0/0.1))",
         variantClasses[item.variant ?? "default"],
@@ -94,13 +87,13 @@ function ToastCard({
       <div className="min-w-0">
         {item.title && <p className="font-semibold">{item.title}</p>}
         {item.description && (
-          <p className="mt-1 text-sm opacity-90">{item.description}</p>
+          <p className="mt-1 text-sm">{item.description}</p>
         )}
       </div>
       <button
         type="button"
         aria-label="Dismiss notification"
-        className="shrink-0 cursor-pointer rounded px-1 text-lg leading-none opacity-80 hover:opacity-100"
+        className="shrink-0 cursor-pointer rounded px-1 text-lg leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
         onClick={onDismiss}
       >
         ×
@@ -258,8 +251,8 @@ export function ToastProvider({
                 isExpanded && "[grid-area:auto]",
                 item.id === enteringToastId &&
                   (position.startsWith("top-")
-                    ? "animate-[dil-toast-enter-top_500ms_ease-out]"
-                    : "animate-[dil-toast-enter-bottom_500ms_ease-out]"),
+                    ? "motion-safe:animate-[dil-toast-enter-top_500ms_ease-out] motion-reduce:animate-none"
+                    : "motion-safe:animate-[dil-toast-enter-bottom_500ms_ease-out] motion-reduce:animate-none"),
               )}
               key={item.id}
               ref={(element) => {
@@ -287,11 +280,4 @@ export function ToastProvider({
       </div>
     </ToastContext.Provider>
   );
-}
-
-export function useToast() {
-  const context = useContext(ToastContext);
-  if (!context)
-    throw new Error("useToast must be used inside <ToastProvider>.");
-  return context;
 }

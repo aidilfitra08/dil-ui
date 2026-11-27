@@ -68,6 +68,7 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
           ? uncontrolledValue
           : uncontrolledValue.slice(0, 1);
     const collapsible = type === "single" ? (props.collapsible ?? false) : true;
+    if ("collapsible" in rootProps) delete rootProps.collapsible;
 
     const toggle = (itemValue: string) => {
       if (disabled) return;
@@ -201,7 +202,7 @@ const item = useContext(AccordionItemContext);
 if (!accordion) throw new Error("AccordionTrigger must be used within <Accordion>.");
 if (!item) throw new Error("AccordionTrigger must be used within <AccordionItem>.");
   return (
-    <h3 className="m-0">
+    <h3 className={cn("m-0")}>
       <button
         {...props}
         ref={ref}
