@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Marquee } from "../components";
 import { Button } from "../components/actions/Button";
 import { Card } from "../components/data-display/Card";
@@ -14,6 +16,8 @@ const navigationItems = [
 ];
 
 export default function NavigationExamplePage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <ThemeProvider theme="retroterminal" mode="light">
       <div className="min-h-screen bg-(--dil-color-background) text-(--dil-color-text)">
@@ -45,6 +49,8 @@ export default function NavigationExamplePage() {
 
         <div className="flex md:min-h-[calc(100vh-4.5rem)]">
           <NeoSidebar
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
             brand={
               <span className="text-sm font-black uppercase tracking-[0.12em]">
                 Workspace
@@ -62,6 +68,7 @@ export default function NavigationExamplePage() {
           <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-10">
             <div className="mx-auto max-w-4xl space-y-8">
               <header className="space-y-3">
+                <Button className="md:hidden" variant="outline" onClick={() => setSidebarOpen(true)}>Open sidebar</Button>
                 <p className="text-xs font-black uppercase tracking-[0.12em] text-(--dil-color-muted)">
                   Responsive navigation example
                 </p>

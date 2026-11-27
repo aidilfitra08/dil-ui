@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "prepack": "npm run build && node scripts/check-package.mjs",
     "lint": "eslint .",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:showcase": "tsc -b && vite build --mode showcase",
+    "preview:showcase": "vite preview --mode showcase"
   },
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
@@ -49,6 +52,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "jsdom": "^30.1.1",
+    "postcss": "^8.5.29",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-is": "^19.2.3",

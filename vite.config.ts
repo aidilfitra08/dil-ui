@@ -5,21 +5,36 @@ import dts from "vite-plugin-dts";
 import tailwindcss from "@tailwindcss/vite";
 
 import { resolve } from "node:path";
+import { scopeLibraryStyles } from "./scripts/scope-library-styles.ts";
 
-export default defineConfig({
+const libraryStyles = scopeLibraryStyles(resolve(import.meta.dirname, "src/index.css"));
+
+export default defineConfig(({ mode }) => mode === "showcase" ? {
+  base: "./",
+  plugins: [react(), tailwindcss(), libraryStyles],
+  build: { outDir: "dist-showcase" },
+} : {
   plugins: [
     react(),
     dts({
       tsconfigPath: "./tsconfig.app.json",
       insertTypesEntry: true,
-      exclude: ["src/examples/**"],
+      exclude: [
+        "src/App.tsx",
+        "src/main.tsx",
+        "src/test-setup.ts",
+        "src/examples/**",
+        "src/**/*.test.*",
+        "src/**/*.stories.*",
+      ],
     }),
     tailwindcss(),
+    libraryStyles,
   ],
 
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
+      entry: resolve(import.meta.dirname, "src/index.ts"),
       name: "DilUI",
       fileName: "index",
       cssFileName: "index",
@@ -34,6 +49,7 @@ export default defineConfig({
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
         "react/compiler-runtime",
+        "recharts",
       ],
 
       output: {
@@ -42,6 +58,7 @@ export default defineConfig({
           "react-dom": "ReactDOM",
           "react/jsx-runtime": "ReactJSXRuntime",
           "react/jsx-dev-runtime": "ReactJSXRuntime",
+          recharts: "Recharts",
         },
       },
     },

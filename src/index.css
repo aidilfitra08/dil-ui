@@ -1,10 +1,52 @@
-@import "tailwindcss/theme";
+@layer theme, base, components, utilities;
 
-@import "tailwindcss/utilities";
+@import "tailwindcss/theme.css" theme(inline);
 
-@import "tailwindcss/preflight";
+@source "./components";
+@source not "./components/**/*.test.*";
+@source not "./components/**/*.stories.*";
 
-@source "./";
+@theme inline {
+  --animate-spin: dil-ui-spin 1s linear infinite;
+  --animate-pulse: dil-ui-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@layer base {
+  @scope (.dil-ui-scope) {
+    @import "tailwindcss/preflight.css";
+  }
+}
+
+@layer components {
+  @scope (.dil-ui-scope) {
+    @tailwind utilities source(none);
+  }
+}
+
+/* Keep responsive display rules together when a host app also emits Tailwind utilities. */
+@utility dil-navbar-toggle {
+  @apply inline-flex sm:hidden;
+}
+
+@utility dil-navbar-drawer {
+  @apply flex sm:hidden transition-transform duration-200 motion-reduce:transition-none;
+}
+
+@utility dil-navbar-backdrop {
+  @apply block sm:hidden transition-opacity motion-reduce:transition-none;
+}
+
+@utility dil-navbar-desktop {
+  @apply hidden sm:flex;
+}
+
+@keyframes dil-ui-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dil-ui-pulse {
+  50% { opacity: 0.5; }
+}
 
 /* Theme-scoped scrollbars use the active dil-ui design tokens. */
 [data-dil-theme],
@@ -76,7 +118,7 @@
 	-webkit-appearance: none;
 }
 
-@keyframes loading-bar {
+@keyframes dil-ui-loading-bar {
 	0% {
 		transform: translateX(-100%);
 	}
